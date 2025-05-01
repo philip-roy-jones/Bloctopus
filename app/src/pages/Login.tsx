@@ -7,8 +7,7 @@ const Login: React.FC = () => {
 
   return (
     <>
-      <h1>Login Page</h1>
-      <p>Please log in to continue.</p>
+      <h1>Login</h1>
       <LoginForm />
       <p>
         Not registered?

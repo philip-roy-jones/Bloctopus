@@ -2,7 +2,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "@/pages/Home";
 import PrivateRoute from "@/components/PrivateRoute";
 import Login from "@/pages/Login";
-import NotFound from "@/pages/NotFound"; // Assuming you have a NotFound component
+import NotFound from "@/pages/NotFound";
+import Register from "@/pages/Register";
 
 const AppRouter = () => {
   return (
@@ -19,6 +20,10 @@ const AppRouter = () => {
         <Route
           path="/login"
           element={<Login />}
+        />
+        <Route
+          path="/register"
+          element={<Register />}
         />
         <Route
           path="*"
