@@ -27,12 +27,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // 🟢 2. Login — no token is returned, just rely on cookie
   const login = async (credentials: { email: string; password: string }) => {
-    await fetch(`${AUTH_SERVICE_URL}/api/login`, {
+    const response = await fetch(`${AUTH_SERVICE_URL}/api/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include", // Important for sending cookies
       body: JSON.stringify(credentials),
     });
+
+    const responseData = await response.json();
+    console.log("Login response:", responseData);
 
     await fetchUser(); // Get user info after login
   };
