@@ -27,3 +27,5 @@ dist-ssr
 .env
 .env.*
 
+
+services/auth/src/generated/prisma/
