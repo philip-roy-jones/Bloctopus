@@ -1,0 +1,18 @@
+services:
+  auth-database:
+    image: "mysql:latest"
+    ports:
+        - "6843:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: "password"
+      MYSQL_DATABASE: ${AUTH_DB_NAME}
+      MYSQL_USER: ${AUTH_DB_USER}
+      MYSQL_PASSWORD: ${AUTH_DB_PASSWORD}
+      MYSQL_PORT: 3306
+    volumes:
+      - auth-data:/var/lib/mysql
+    env_file:
+      - .env
+
+volumes:
+  auth-data:

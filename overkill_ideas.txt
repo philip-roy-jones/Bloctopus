@@ -1,0 +1,4 @@
+- Shared lists using web sockets for real time communication
+- Chat system (with typing indicator)
+- Sync calendars from other services
+- Admin dashboard for user statistics

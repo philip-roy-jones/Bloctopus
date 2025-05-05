@@ -1,0 +1,28 @@
+{
+  "name": "project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently -k --names \"web_app,auth\" --prefix-colors \"cyan,magenta\" \"npm --workspace apps/web_app run dev\" \"npm --workspace services/auth run dev\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/philip-roy-jones/CS361-Project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/philip-roy-jones/CS361-Project/issues"
+  },
+  "homepage": "https://github.com/philip-roy-jones/CS361-Project#readme",
+  "workspaces": [
+    "apps/web_app",
+    "services/auth"
+  ],
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
