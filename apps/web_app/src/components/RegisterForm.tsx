@@ -1,36 +1,24 @@
-import { AUTH_SERVICE_URL } from "@/config";
+import { registerUser } from "@/services/authService";
 import React from "react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const RegisterForm: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  const navigate = useNavigate();
+
   const handleRegister = async () => {
-    console.log("Registering with:", { email, password, confirmPassword });
-
-    const response = await fetch(`${AUTH_SERVICE_URL}/api/register`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify({
-        email,
-        password,
-        confirmPassword,
-      }),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error("Registration failed:", errorData);
+    try {
+      await registerUser({ email, password, confirmPassword });
+      console.log("Registration Successful");
+      navigate("/register/confirm", { state: { email } });
+    } catch (error) {
+      console.error("Registration failed: ", error);
       alert("Registration failed. Please try again.");
-      return;
     }
-
-    console.log("Registration Successful");
   };
 
   return (

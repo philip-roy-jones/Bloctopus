@@ -1,10 +1,10 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "@/pages/Home";
+import HomePage from "@/pages/HomePage";
 import PrivateRoute from "@/components/PrivateRoute";
-import Login from "@/pages/Login";
-import NotFound from "@/pages/NotFound";
-import Register from "@/pages/Register";
-import RegisterConfirm from "@/pages/RegisterConfirm";
+import LoginPage from "@/pages/LoginPage";
+import NotFoundPage from "@/pages/NotFoundPage";
+import Register from "@/pages/RegisterPage";
+import RegisterConfirmPage from "@/pages/RegisterConfirmPage";
 
 const AppRouter = () => {
   return (
@@ -14,13 +14,13 @@ const AppRouter = () => {
           path="/" 
           element={
             <PrivateRoute>
-              <Home />
+              <HomePage />
             </PrivateRoute>
           } 
         />
         <Route
           path="/login"
-          element={<Login />}
+          element={<LoginPage />}
         />
         <Route
           path="/register"
@@ -28,11 +28,11 @@ const AppRouter = () => {
         />
         <Route
           path="/register/confirm"
-          element={<RegisterConfirm />}
+          element={<RegisterConfirmPage />}
         />
         <Route
           path="*"
-          element={<NotFound />}
+          element={<NotFoundPage />}
         />
       </Routes>
     </Router>

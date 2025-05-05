@@ -15,11 +15,21 @@ datasource db {
 }
 
 model User {
-  id          Int      @id @default(autoincrement())
-  email       String   @unique
-  password    String
-  displayName String   @unique
-  role        String   @default("user") // e.g., "user", "admin"
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id             Int      @id @default(autoincrement())
+  email          String   @unique
+  hashedPassword String
+  displayName    String
+  role           String   @default("user") // e.g., "user", "admin"
+  isVerified     Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model VerificationToken {
+  id        Int      @id @default(autoincrement())
+  email     String
+  token     String
+  type      String // e.g., 'email_verification', 'password_reset'
+  expiresAt DateTime
+  createdAt DateTime @default(now())
 }
