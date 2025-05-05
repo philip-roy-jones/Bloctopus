@@ -49,10 +49,39 @@ app.post("/api/register", async (req, res) => {
     res.status(400).json({ error: "User already exists or invalid data" });
   }
 });
-
+// TODO: Move logic to a separate service
+// TODO: Send verification email with the code using SendGrid
 app.post("/api/register/confirm", async (req, res) => {
   const { email, verificationCode } = req.body;
-  
+  try {
+    await prisma.$transaction(async (prisma) => {
+      // Check if the verification code exists and is valid
+      const token = await prisma.verificationToken.findFirst({
+        where: {
+          email: email,
+          token: verificationCode,
+          type: "email_verification",
+          expiresAt: {
+            gte: new Date(), // Check if the token has not expired
+          },
+        },
+      });
+      // If token is not found or expired, return an error
+      if (!token) {
+        console.log("Invalid or expired verification code", { email, verificationCode });
+        return res.status(400).json({ error: "Invalid or expired verification code" });
+      }
+      // If token is valid, delete it and mark the user as verified
+      await prisma.verificationToken.delete({ where: { id: token.id } });
+      await prisma.user.update({
+        where: { email: email },
+        data: { isVerified: true },
+      });
+      res.status(200).json({ message: "Email verified successfully" });
+    });
+  } catch (error) {
+    res.status(500).json({ error: "An error occurred during email verification" });
+  }
 });
 
 app.post("/api/login", (req, res) => {

@@ -31,7 +31,7 @@ const RegisterConfirmPage: React.FC = () => {
   return (
     <>
       <h2>Confirm your email: {email}</h2>
-      <RegisterConfirmForm />
+      <RegisterConfirmForm email={email}/>
     </>
   )
 };
