@@ -1,28 +1,20 @@
 import React, {useState} from "react";
-import { useNavigate } from "react-router-dom";
-import { confirmRegistration } from "@/services/authService";
 
-const RegisterConfirmForm: React.FC<{ email: string }> = ({ email }) => {
+interface RegisterConfirmFormProps {
+  email: string;
+  submitConfirmation: (email: string, verificationCode: string) => Promise<void>;
+}
+
+const RegisterConfirmForm: React.FC<RegisterConfirmFormProps> = ({ email, submitConfirmation }) => {
   const [verificationCode, setVerificationCode] = useState<string>("");
-  const navigate = useNavigate();
 
-  const handleSubmit = async () => {
-    try {
-      confirmRegistration({ email, verificationCode });
-      navigate("/login", { state: { message: "Successfully verified your email!" } });
-    } catch (error) {
-      console.error("Could not confirm account: ", error);
-      alert("Confirmation failed. Please try again.");
-    }
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    await submitConfirmation(email, verificationCode);
   };
   
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        handleSubmit();
-      }}
-    >
+    <form onSubmit={handleSubmit}>
       <label htmlFor="verificationCode">Enter Verification Code:</label>
       <input
         type="text"

@@ -1,37 +1,50 @@
 import React, { useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import RegisterConfirmForm from "@/components/RegisterConfirmForm";
+import { confirmRegistration } from "@/services/authService";
 
 const RegisterConfirmPage: React.FC = () => {
-  const location = useLocation();
   const navigate = useNavigate();
   const queryParams = new URLSearchParams(location.search);
   const verificationCode = queryParams.get("code");
-  const email = location.state?.email; // Access the email from the state
+  const email = queryParams.get("email");
+
+  const submitConfirmation = async (email: string, verificationCode: string) => {
+    try {
+      confirmRegistration({ email, verificationCode });
+      navigate("/login", { state: { message: "Successfully verified your email! Please login." } });
+    } catch (error) {
+      console.error("Could not confirm account: ", error);
+      alert("Confirmation failed. Please try again.");
+    }
+  };
 
   useEffect(() => {
-    if (!email) {
-      // If email is not present, redirect to the register page
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email || !emailRegex.test(email)) {
       navigate("/register");
       return;
     }
 
-    if (verificationCode) {
-      // Here you would typically handle the verification logic, e.g., calling an API to verify the code
-      console.log("Verification code received:", verificationCode);
-      // After handling the verification, you might want to redirect or show a success message
+    if (email && verificationCode) {
+      submitConfirmation(email, verificationCode);
     }
 
   }, [email, navigate, verificationCode]);
 
   if (!email) {
-    return <p>Redirecting...</p>; // or a spinner/loading component
+    return <p>Email is missing. Please check your registration link.</p>;
+  }
+
+  if (email && verificationCode) {
+    return <p>Verifying your account...</p>;
   }
 
   return (
     <>
       <h2>Confirm your email: {email}</h2>
-      <RegisterConfirmForm email={email}/>
+      <p>Please check your inbox for the verification code.</p>
+      <RegisterConfirmForm email={email} submitConfirmation={submitConfirmation} />
     </>
   )
 };
