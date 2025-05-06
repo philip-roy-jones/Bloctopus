@@ -5,37 +5,30 @@ import LoginPage from "@/pages/LoginPage";
 import NotFoundPage from "@/pages/NotFoundPage";
 import Register from "@/pages/RegisterPage";
 import RegisterConfirmPage from "@/pages/RegisterConfirmPage";
+import { BannerProvider } from "@/context/BannerContext";
+import Banner from "@/components/Banner";
 
 const AppRouter = () => {
   return (
-    <Router>
-      <Routes>
-        <Route 
-          path="/" 
-          element={
-            <PrivateRoute>
-              <HomePage />
-            </PrivateRoute>
-          } 
-        />
-        <Route
-          path="/login"
-          element={<LoginPage />}
-        />
-        <Route
-          path="/register"
-          element={<Register />}
-        />
-        <Route
-          path="/register/confirm"
-          element={<RegisterConfirmPage />}
-        />
-        <Route
-          path="*"
-          element={<NotFoundPage />}
-        />
-      </Routes>
-    </Router>
+    <BannerProvider>
+      <Router>
+        <Banner />
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <PrivateRoute>
+                <HomePage />
+              </PrivateRoute>
+            }
+          />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/register/confirm" element={<RegisterConfirmPage />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </Router>
+    </BannerProvider>
   );
 };
 

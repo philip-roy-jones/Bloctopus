@@ -14,7 +14,7 @@ const RegisterForm: React.FC = () => {
     try {
       await registerUser({ email, password, confirmPassword });
       console.log("Registration Successful");
-      navigate("/register/confirm", { state: { email } });
+      navigate(`/register/confirm?email=${encodeURIComponent(email)}`);
     } catch (error) {
       console.error("Registration failed: ", error);
       alert("Registration failed. Please try again.");
