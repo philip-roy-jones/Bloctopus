@@ -9,7 +9,6 @@ interface PrivateRouteProps {
 
 function PrivateRoute({ children, allowedRoles }: PrivateRouteProps) {
   const userContext = useAuth();
-  console.log("User Context:", userContext);
   if (!userContext || !userContext.isAuthenticated) {
     return <Navigate to="/login" />;
   } else if (allowedRoles && !allowedRoles.includes(userContext.user!.role)) {

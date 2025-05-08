@@ -7,6 +7,8 @@ import Register from "@/pages/RegisterPage";
 import RegisterConfirmPage from "@/pages/RegisterConfirmPage";
 import { BannerProvider } from "@/context/BannerContext";
 import Banner from "@/components/Banner";
+import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
+import ForgotPasswordConfirmPage from "@/pages/ForgotPasswordConfirmPage";
 
 const AppRouter = () => {
   return (
@@ -25,6 +27,8 @@ const AppRouter = () => {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<Register />} />
           <Route path="/register/confirm" element={<RegisterConfirmPage />} />
+          <Route path="/forgot" element={<ForgotPasswordPage />} />
+          <Route path="/forgot/confirm" element={<ForgotPasswordConfirmPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Router>

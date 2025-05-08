@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react";
 import LoginForm from "@/components/LoginForm";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useBanner } from "@/context/BannerContext";
@@ -7,6 +7,9 @@ const LoginPage: React.FC = () => {
   const { setBanner } = useBanner();
   const location = useLocation();
   const navigate = useNavigate();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   useEffect(() => {
     if (location.state && location.state.message) {
@@ -20,11 +23,16 @@ const LoginPage: React.FC = () => {
   return (
     <>
       <h1>Login</h1>
-      <LoginForm />
+      <div>
+        <LoginForm email={email} password={password} setEmail={setEmail} setPassword={setPassword}/>
+      </div>
       <p>
-        Not registered?
-        <Link to="/register">Create an account</Link>
+        <Link to="/forgot">Forgot Password?</Link>
       </p>
+      <p>
+        Not Registered? <Link to="/register">Sign Up</Link>
+      </p>
+      <p>Helps you stay organized! Remind yourself in the future!</p>
     </>
   );
 };

@@ -23,6 +23,7 @@ model User {
   isVerified        Boolean  @default(false)
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
+  acceptedTerms     Boolean  @default(false)
 }
 
 model VerificationToken {

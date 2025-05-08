@@ -1,11 +1,19 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import {User, AuthContextType}  from "@/types/AuthContext";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
+import { User, AuthContextType } from "@/types/AuthContext";
 import { AUTH_SERVICE_URL } from "@/config";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [failedAttempts, setFailedAttempts] = useState(0);
+  const [isBlocked, setIsBlocked] = useState(false);
 
   // 🟡 1. Fetch user info (e.g. on page refresh or app start)
   const fetchUser = async () => {
@@ -27,6 +35,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // 🟢 2. Login — no token is returned, just rely on cookie
   const login = async (credentials: { email: string; password: string }) => {
+    /*
     const response = await fetch(`${AUTH_SERVICE_URL}/api/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -38,14 +47,51 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     console.log("Login response:", responseData);
 
     await fetchUser(); // Get user info after login
+    */
+    // TODO: Replace with actual login logic
+    if (isBlocked) {
+      throw new Error("Too many failed attempts. Please try again later.");
+    }
+
+    try {
+      if (
+        credentials.email === "jonephil@oregonstate.edu" &&
+        credentials.password === "password"
+      ) {
+        const testUser = {
+          id: "1",
+          email: "jonephil@oregonstate.edu",
+          role: "user",
+          displayName: "Philip Jones",
+        };
+        setUser(testUser);
+        setFailedAttempts(0); // Reset failed attempts on successful login
+      } else {
+        throw new Error("Invalid credentials");
+      }
+    } catch (error) {
+      setFailedAttempts((prev) => prev + 1);
+
+      if (failedAttempts + 1 >= 5) {
+        setIsBlocked(true);
+        setTimeout(() => {
+          setIsBlocked(false);
+          setFailedAttempts(0); // Reset failed attempts after block period
+        }, 15 * 60 * 1000); // 15 minutes
+      }
+
+      throw error;
+    }
   };
 
   // 🔴 3. Logout — backend clears cookie
   const logout = async () => {
+    /*
     await fetch(`${AUTH_SERVICE_URL}/api/logout`, {
       method: "POST",
       credentials: "include",
     });
+    */
     setUser(null);
   };
 
@@ -55,13 +101,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, isAuthenticated: !!user }}>
+    <AuthContext.Provider
+      value={{ user, login, logout, isAuthenticated: !!user }}
+    >
       {children}
     </AuthContext.Provider>
   );
 }
-
-
 
 export function useAuth(): AuthContextType {
   const context = useContext(AuthContext);

@@ -8,13 +8,21 @@ dotenv.config();
 const prisma = new PrismaClient();
 
 export const authService = {
-  registerUser: async (email: string, password: string) => {
+  registerUser: async (email: string, password: string, acceptedTerms: boolean) => {
+    if (!email || !password) throw new Error('Email and password are required');
+    if (!acceptedTerms) throw new Error('You must accept the terms and conditions');
+
+    const existingUser = await prisma.user.findUnique({ where: { email } });
+    if (existingUser) {
+      throw new Error('User is already registered with this email');
+    }
+
     const saltRounds = 12;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     const user = await prisma.$transaction(async (tx) => {
       const newUser = await tx.user.create({
-        data: { email, hashedPassword, displayName: 'User' },
+        data: { email, hashedPassword, displayName: 'User', acceptedTerms },
       });
       console.log('New user created:', newUser);
       const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
@@ -95,4 +103,18 @@ export const authService = {
       await tx.user.update({ where: { email }, data: { isVerified: true } });
     });
   },
+
+  loginUser: async (email: string, password: string) => {
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) throw new Error('User not found');
+
+    const isPasswordValid = await bcrypt.compare(password, user.hashedPassword);
+    if (!isPasswordValid) throw new Error('Invalid password');
+
+    if (!user.isVerified) throw new Error('Email not verified');
+
+    // Optionally, you can return user data or a token here
+    const { id, email: userEmail, role, displayName } = user;
+    return { id, email: userEmail, role, displayName };
+  }
 };

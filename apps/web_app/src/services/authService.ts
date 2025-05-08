@@ -5,10 +5,12 @@ export async function registerUser({
   email,
   password,
   confirmPassword,
+  acceptedTerms
 }: {
   email: string;
   password: string;
   confirmPassword: string;
+  acceptedTerms: boolean;
 }): Promise<void> {
   try {
     const response = await fetch(`${AUTH_SERVICE_URL}/api/register`, {
@@ -17,12 +19,12 @@ export async function registerUser({
         "Content-Type": "application/json",
       },
       credentials: "include",
-      body: JSON.stringify({ email, password, confirmPassword }),
+      body: JSON.stringify({ email, password, confirmPassword, acceptedTerms }),
     });
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(errorData.message || "Registration failed");
+      throw new Error(errorData.error || "Registration failed");
     }
   } catch (error) {
     console.error("Registration request failed:", error);

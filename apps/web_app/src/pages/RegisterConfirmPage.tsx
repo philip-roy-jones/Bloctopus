@@ -9,10 +9,15 @@ const RegisterConfirmPage: React.FC = () => {
   const verificationCode = queryParams.get("code");
   const email = queryParams.get("email");
 
-  const submitConfirmation = async (email: string, verificationCode: string) => {
+  const submitConfirmation = async (
+    email: string,
+    verificationCode: string
+  ) => {
     try {
       confirmRegistration({ email, verificationCode });
-      navigate("/login", { state: { message: "Successfully verified your email! Please login." } });
+      navigate("/login", {
+        state: { message: "Successfully verified your email! Please login." },
+      });
     } catch (error) {
       console.error("Could not confirm account: ", error);
       alert("Confirmation failed. Please try again.");
@@ -29,7 +34,6 @@ const RegisterConfirmPage: React.FC = () => {
     if (email && verificationCode) {
       submitConfirmation(email, verificationCode);
     }
-
   }, [email, navigate, verificationCode]);
 
   if (!email) {
@@ -44,9 +48,26 @@ const RegisterConfirmPage: React.FC = () => {
     <>
       <h2>Confirm your email: {email}</h2>
       <p>Please check your inbox for the verification code.</p>
-      <RegisterConfirmForm email={email} submitConfirmation={submitConfirmation} />
+      <RegisterConfirmForm
+        email={email}
+        submitConfirmation={submitConfirmation}
+      />
+      <button
+        onClick={async () => {
+          try {
+            await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate API call delay
+            console.log(`Resending verification email to ${email}`);
+            alert("Verification email resent. Please check your inbox.\n\nThis is a simulation of the resend functionality.");
+          } catch (error) {
+            console.error("Error resending verification email: ", error);
+            alert("Failed to resend verification email. Please try again.");
+          }
+        }}
+      >
+        Resend Verification Email
+      </button>
     </>
-  )
+  );
 };
 
 export default RegisterConfirmPage;

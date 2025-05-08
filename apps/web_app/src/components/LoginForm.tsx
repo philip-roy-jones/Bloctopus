@@ -1,19 +1,24 @@
 import React from "react"
 import { useAuth } from "@/context/AuthContext";
-import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const LoginForm: React.FC = () => {
+interface LoginFormProps {
+  email: string;
+  password: string;
+  setEmail: React.Dispatch<React.SetStateAction<string>>;
+  setPassword: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const LoginForm: React.FC<LoginFormProps> = ({ email, password, setEmail, setPassword }) => {
   const { login } = useAuth();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-
     try {
-      console.log("Logging in with:", { email, password });
-      await login({ email, password})
+      await login({ email, password});
+      navigate("/");
     } catch (error) {
       console.error("Login failed:", error);
     }
