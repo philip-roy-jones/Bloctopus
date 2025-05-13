@@ -1,7 +1,9 @@
 import bcrypt from 'bcrypt';
 import { PrismaClient } from '../generated/prisma';
-import sgMail from '@sendgrid/mail';
 import dotenv from 'dotenv';
+import { sendVerificationEmail } from '../utils/sendVerificationEmail';
+import { sendPasswordResetEmail } from '../utils/sendPasswordResetEmail';
+import jwt from 'jsonwebtoken';
 
 dotenv.config();
 
@@ -20,77 +22,72 @@ export const authService = {
     const saltRounds = 12;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    const user = await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx) => {
       const newUser = await tx.user.create({
         data: { email, hashedPassword, displayName: 'User', acceptedTerms },
       });
       console.log('New user created:', newUser);
+
       const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
 
       await tx.verificationToken.create({
         data: {
-          email: newUser.email,
+          userId: newUser.id,
           token: verificationCode,
           type: 'email_verification',
           expiresAt: new Date(Date.now() + 10 * 60 * 1000),
         },
       });
       console.log('Verification token created:', verificationCode);
-      if (!process.env.MAILER_API_KEY) {
-        throw new Error('MAILER_API_KEY is not defined in the environment variables');
-      }
-      sgMail.setApiKey(process.env.MAILER_API_KEY);
 
-      const pageLink = `${process.env.APP_URL}/register/confirm`;
-      const verificationLink = `${pageLink}?email=${encodeURIComponent(newUser.email)}`;
-      const verificationLinkWithCode = `${pageLink}?email=${encodeURIComponent(newUser.email)}&code=${verificationCode}`;
+      // Send verification email
+      await sendVerificationEmail(newUser.email, verificationCode);
+    });
+  },
 
-      const msg = {
-        to: newUser.email,
-        from: 'jonephil@oregonstate.edu', // Replace with your verified sender email
-        subject: 'Verify your email address',
-        text: `
-          Your verification code is: ${verificationCode}
+  resendVerificationEmail: async (email: string) => {
+    if (!email) throw new Error('Email is required');
 
-          This code will expire in 10 minutes.
+    // Find the user by email
+    const user = await prisma.user.findUnique({ where: { email } });
 
-          Click the link below to verify your email automatically:
-          ${verificationLinkWithCode}
+    if (!user) throw new Error('User not found');
+    if (user.isVerified) throw new Error('User is already verified');
 
-          If the button doesn't work, go to this page and enter your code manually:
-          ${verificationLink}
-
-          If you didn’t request this, you can safely ignore this email.
-        `,
-        html: `
-          <p>Your verification code is: <strong>${verificationCode}</strong></p>
-          <p>This code will expire in <strong>10 minutes</strong>.</p>
-          <p>Click the button below to verify your email automatically:</p>
-          <p>
-            <a href="${verificationLinkWithCode}"
-              style="display: inline-block; padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">
-              Verify Email
-            </a>
-          </p>
-          <p>If the button doesn't work, you can manually enter your code at:</p>
-          <p><a href="${verificationLink}">${verificationLink}</a></p>
-          <p>If you didn’t request this, you can safely ignore this email.</p>
-        `
-      };
-
-      await sgMail.send(msg);
-      console.log('Verification email sent to:', newUser.email);
-      return newUser;
+    // Destroy all existing email_verification tokens
+    await prisma.verificationToken.deleteMany({
+      where: {
+        userId: user.id,
+        type: 'email_verification',
+      },
     });
 
-    return user;
+    // Create a new verification token
+    const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+    const token = await prisma.verificationToken.create({
+      data: {
+        userId: user.id,
+        token: verificationCode,
+        type: 'email_verification',
+        expiresAt: new Date(Date.now() + 10 * 60 * 1000),
+      },
+    });
+
+    sendVerificationEmail(user.email, token.token); // Uncomment when you implement the email logic
   },
 
   confirmUser: async (email: string, code: string) => {
+    if (!email || !code) throw new Error('Email and verification code are required');
+
+    const user = await prisma.user.findUnique({ where: { email } });
+
+    if (!user) throw new Error('User not found');
+    if (user.isVerified) throw new Error('User is already verified');
+
     return await prisma.$transaction(async (tx) => {
       const token = await tx.verificationToken.findFirst({
         where: {
-          email,
+          userId: user.id,
           token: code,
           type: 'email_verification',
           expiresAt: { gte: new Date() },
@@ -102,6 +99,44 @@ export const authService = {
       await tx.verificationToken.delete({ where: { id: token.id } });
       await tx.user.update({ where: { email }, data: { isVerified: true } });
     });
+  },
+
+  forgotPassword: async (email: string) => {
+    if (!email) throw new Error('Email is required');
+
+    const user = await prisma.user.findUnique({ where: { email } });
+
+    if (!user) throw new Error('User not found');
+    if (!user.isVerified) throw new Error('Email not verified');
+
+    const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
+    const token = await prisma.verificationToken.create({
+      data: {
+        userId: user.id,
+        token: resetCode,
+        type: 'password_reset',
+        expiresAt: new Date(Date.now() + 10 * 60 * 1000),
+      },
+    });
+
+    // Send password reset email
+    await sendPasswordResetEmail(user.email, resetCode);
+  },
+
+  confirmForgotPassword: async (code: string) => {
+    if (!code) throw new Error('Verification code is required');
+
+    const token = await prisma.verificationToken.findFirst({
+      where: {
+        token: code,
+        type: 'password_reset',
+        expiresAt: { gte: new Date() },
+      },
+    });
+
+    if (!token) throw new Error('Invalid or expired verification code');
+
+    // TODO: return jwt token for password reset
   },
 
   loginUser: async (email: string, password: string) => {
