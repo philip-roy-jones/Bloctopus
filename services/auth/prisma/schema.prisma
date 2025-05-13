@@ -24,13 +24,16 @@ model User {
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
   acceptedTerms     Boolean  @default(false)
+  verificationTokens VerificationToken[] // Relation field
 }
 
 model VerificationToken {
   id         Int      @id @default(autoincrement())
-  email      String
   token      String
   type       String   // e.g., 'email_verification', 'password_reset'
   expiresAt  DateTime
   createdAt  DateTime @default(now())
+
+  userId     Int
+  user       User     @relation(fields: [userId], references: [id])
 }
