@@ -68,9 +68,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       try {
         const u = await fetchUser();
         setUser(u);
-        setIsAuthenticated(!!u);
+      } catch (error) {
+        console.error("Failed to fetch user:", error);
       } finally {
-        setIsLoading(false);
+        // This always runs, success or failure
+        setIsAuthenticated(!!user);
       }
     }
     loadUser();
