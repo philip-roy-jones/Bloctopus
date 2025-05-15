@@ -65,21 +65,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // 🔁 4. On mount, fetch user data
   useEffect(() => {
     async function loadUser() {
+      setIsLoading(true);
       try {
         const u = await fetchUser();
         setUser(u);
       } catch (error) {
         console.error("Failed to fetch user:", error);
       } finally {
-        // This always runs, success or failure
-        setIsAuthenticated(!!user);
+        setIsLoading(false);
       }
     }
     loadUser();
   }, []);
 
   useEffect(() => {
-    console.log("User state updated:", user);
+    // This useEffect will always reference the latest `user` value, no mismatches in state
+    setIsAuthenticated(!!user);
   }, [user]);
 
   return (
