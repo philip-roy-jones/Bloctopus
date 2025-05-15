@@ -6,7 +6,7 @@ import { sendPasswordResetEmail } from '../utils/sendPasswordResetEmail';
 import jwt from 'jsonwebtoken';
 
 dotenv.config();
-
+const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY as string;
 const prisma = new PrismaClient();
 
 export const authService = {
@@ -148,8 +148,28 @@ export const authService = {
 
     if (!user.isVerified) throw new Error('Email not verified');
 
-    // Optionally, you can return user data or a token here
-    const { id, email: userEmail, role, displayName } = user;
-    return { id, email: userEmail, role, displayName };
+    // Generate JWT Token
+    const token = jwt.sign(
+      {
+        userId: user.id,
+      },
+      JWT_SECRET_KEY,
+      { expiresIn: '1h' } // Token expires in 1 hour
+    );
+
+    return token;
+  },
+
+  getMe: async (userId: string) => {
+    const user = await prisma.user.findUnique({ where: { id: Number(userId) } });
+    if (!user) throw new Error('User not found');
+    if (!user.isVerified) throw new Error('Email not verified');
+
+    return {
+      id: user.id,
+      email: user.email,
+      role: user.role,
+      displayName: user.displayName,
+    };
   }
 };

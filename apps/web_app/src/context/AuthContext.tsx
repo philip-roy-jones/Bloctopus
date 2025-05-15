@@ -12,30 +12,29 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [failedAttempts, setFailedAttempts] = useState(0);
-  const [isBlocked, setIsBlocked] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   // 🟡 1. Fetch user info (e.g. on page refresh or app start)
   const fetchUser = async () => {
     try {
-      const res = await fetch("/api/me", {
+      const res = await fetch(`${AUTH_SERVICE_URL}/api/me`, {
         credentials: "include", // Send cookies with the request
       });
 
       if (res.ok) {
         const data = await res.json();
-        setUser(data);
+        return data;
       } else {
-        setUser(null);
+        return null;
       }
     } catch {
-      setUser(null);
+      return null;
     }
   };
 
   // 🟢 2. Login — no token is returned, just rely on cookie
   const login = async (credentials: { email: string; password: string }) => {
-    /*
     const response = await fetch(`${AUTH_SERVICE_URL}/api/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -43,45 +42,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       body: JSON.stringify(credentials),
     });
 
-    const responseData = await response.json();
-    console.log("Login response:", responseData);
-
-    await fetchUser(); // Get user info after login
-    */
-    // TODO: Replace with actual login logic
-    if (isBlocked) {
-      throw new Error("Too many failed attempts. Please try again later.");
+    if (!response.ok) {
+      throw new Error("Login failed");
     }
 
-    try {
-      if (
-        credentials.email === "jonephil@oregonstate.edu" &&
-        credentials.password === "password"
-      ) {
-        const testUser = {
-          id: "1",
-          email: "jonephil@oregonstate.edu",
-          role: "user",
-          displayName: "Philip Jones",
-        };
-        setUser(testUser);
-        setFailedAttempts(0); // Reset failed attempts on successful login
-      } else {
-        throw new Error("Invalid credentials");
-      }
-    } catch (error) {
-      setFailedAttempts((prev) => prev + 1);
-
-      if (failedAttempts + 1 >= 5) {
-        setIsBlocked(true);
-        setTimeout(() => {
-          setIsBlocked(false);
-          setFailedAttempts(0); // Reset failed attempts after block period
-        }, 15 * 60 * 1000); // 15 minutes
-      }
-
-      throw error;
-    }
+    const fetchedUser = await fetchUser(); // Fetch user info after login
+    setUser(fetchedUser);
+    setIsAuthenticated(!!fetchedUser);
   };
 
   // 🔴 3. Logout — backend clears cookie
@@ -95,14 +62,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   };
 
-  // 🔁 4. On mount, check if already logged in
+  // 🔁 4. On mount, fetch user data
   useEffect(() => {
-    fetchUser();
+    async function loadUser() {
+      try {
+        const u = await fetchUser();
+        setUser(u);
+        setIsAuthenticated(!!u);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    loadUser();
   }, []);
+
+  useEffect(() => {
+    console.log("User state updated:", user);
+  }, [user]);
 
   return (
     <AuthContext.Provider
-      value={{ user, login, logout, isAuthenticated: !!user }}
+      value={{ user, login, logout, isAuthenticated, isLoading }}
     >
       {children}
     </AuthContext.Provider>

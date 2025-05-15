@@ -10,6 +10,7 @@ interface AuthContextType {
   login: (credentials: { email: string; password: string }) => Promise<void>;
   logout: () => void;
   isAuthenticated: boolean;
+  isLoading: boolean;
 }
 
 export type { User, AuthContextType };

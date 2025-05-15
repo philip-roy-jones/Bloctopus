@@ -9,6 +9,7 @@ import { BannerProvider } from "@/context/BannerContext";
 import Banner from "@/components/Banner";
 import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
 import ForgotPasswordConfirmPage from "@/pages/ForgotPasswordConfirmPage";
+import PublicRoute from "@/components/PublicRoute";
 
 const AppRouter = () => {
   return (
@@ -24,12 +25,50 @@ const AppRouter = () => {
               </PrivateRoute>
             }
           />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/register/confirm" element={<RegisterConfirmPage />} />
-          <Route path="/forgot" element={<ForgotPasswordPage />} />
-          <Route path="/forgot/confirm" element={<ForgotPasswordConfirmPage />} />
-          <Route path="*" element={<NotFoundPage />} />
+          <Route
+            path="/login"
+            element={
+              <PublicRoute>
+                <LoginPage />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/register"
+            element={
+              <PublicRoute>
+                <Register />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/register/confirm"
+            element={
+              <PublicRoute>
+                <RegisterConfirmPage />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/forgot"
+            element={
+              <PublicRoute>
+                <ForgotPasswordPage />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/forgot/confirm"
+            element={<ForgotPasswordConfirmPage />}
+          />
+          <Route
+            path="*"
+            element={
+              <PublicRoute>
+                <NotFoundPage />
+              </PublicRoute>
+            }
+          />
         </Routes>
       </Router>
     </BannerProvider>

@@ -7,15 +7,21 @@ interface PrivateRouteProps {
   allowedRoles?: string[];
 }
 
-function PrivateRoute({ children, allowedRoles }: PrivateRouteProps) {
-  const userContext = useAuth();
-  if (!userContext || !userContext.isAuthenticated) {
+export default function PrivateRoute({ children, allowedRoles }: PrivateRouteProps) {
+  const { isAuthenticated, isLoading, user } = useAuth();
+
+  
+  if (isLoading) {
+    return <div>Loading…</div>;
+  }
+
+  if (!isAuthenticated) {
     return <Navigate to="/login" />;
-  } else if (allowedRoles && !allowedRoles.includes(userContext.user!.role)) {
+  }
+
+  if (allowedRoles && !allowedRoles.includes(user!.role)) {
     return <Navigate to="/unauthorized" />;
   }
 
-  return children;
+  return <>{children}</>;
 }
-
-export default PrivateRoute;

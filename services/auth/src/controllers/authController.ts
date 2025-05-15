@@ -1,7 +1,8 @@
-import { Request, Response } from 'express';
+import { RequestHandler } from 'express';
 import { authService } from '../services/authService';
+import { AuthRequest } from '../@types/express';
 
-export const register = async (req: Request, res: Response) => {
+export const register: RequestHandler = async (req, res) => {
   try {
     console.log("route hit");
     await authService.registerUser(req.body.email, req.body.password, req.body.acceptedTerms);
@@ -11,7 +12,7 @@ export const register = async (req: Request, res: Response) => {
   }
 };
 
-export const resendVerification = async (req: Request, res: Response) => {
+export const resendVerification: RequestHandler = async (req, res) => {
   try {
     const { email } = req.body;
     await authService.resendVerificationEmail(email);
@@ -21,7 +22,7 @@ export const resendVerification = async (req: Request, res: Response) => {
   }
 }
 
-export const confirmRegistration = async (req: Request, res: Response) => {
+export const confirmRegistration: RequestHandler = async (req, res) => {
   try {
     await authService.confirmUser(req.body.email, req.body.verificationCode);
     res.status(200).json({ message: 'Email verified successfully' });
@@ -30,7 +31,7 @@ export const confirmRegistration = async (req: Request, res: Response) => {
   }
 };
 
-export const forgotPassword = async (req: Request, res: Response) => {
+export const forgotPassword: RequestHandler = async (req, res) => {
   try {
     const { email } = req.body;
     await authService.forgotPassword(email);
@@ -40,7 +41,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
   }
 }
 
-export const confirmForgotPassword = async (req: Request, res: Response) => {
+export const confirmForgotPassword: RequestHandler = async (req, res) => {
   try {
     const { code } = req.body;
     const jwt = await authService.confirmForgotPassword(code);
@@ -51,12 +52,27 @@ export const confirmForgotPassword = async (req: Request, res: Response) => {
   }
 };
 
-export const login = async (req: Request, res: Response) => {
+export const login: RequestHandler = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await authService.loginUser(email, password);
-    res.status(200).json(user);
+    const jwtToken = await authService.loginUser(email, password);
+    res.cookie('sessionCookie', jwtToken, { httpOnly: true, secure: true, sameSite: 'strict' });
+    res.status(200).json({ message: 'Login successful' });
   } catch (error: any) {
     res.status(400).json({ error: error.message || 'Login failed' });
+  }
+};
+
+export const getMe: RequestHandler = async (req: AuthRequest, res): Promise<void> => {
+  try {
+    const userParam = req.user;
+    if (!userParam) {
+      res.status(401).json({ message: 'Unauthorized' });
+      return;
+    }
+    const user = await authService.getMe(userParam.userId);
+    res.status(200).json(user);
+  } catch (error: any) {
+    res.status(400).json({ error: error.message || 'Failed to fetch user' });
   }
 };
