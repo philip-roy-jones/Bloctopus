@@ -53,12 +53,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // 🔴 3. Logout — backend clears cookie
   const logout = async () => {
-    /*
     await fetch(`${AUTH_SERVICE_URL}/api/logout`, {
       method: "POST",
       credentials: "include",
     });
-    */
+    
     setUser(null);
   };
 
