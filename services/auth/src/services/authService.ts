@@ -1,12 +1,17 @@
 import bcrypt from 'bcrypt';
 import { PrismaClient } from '../generated/prisma';
-import dotenv from 'dotenv';
 import { sendVerificationEmail } from '../utils/sendVerificationEmail';
 import { sendPasswordResetEmail } from '../utils/sendPasswordResetEmail';
 import jwt from 'jsonwebtoken';
+import { AUTH_SECRET, PASSWORD_RESET_SECRET, PASSWORD_RESET_DURATION } from '../config';
 
-dotenv.config();
-const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY as string;
+if (!AUTH_SECRET) {
+  throw new Error('AUTH_SECRET is not defined in the environment variables');
+}
+if (!PASSWORD_RESET_SECRET) {
+  throw new Error('PASSWORD_RESET_SECRET is not defined in the environment variables');
+}
+
 const prisma = new PrismaClient();
 
 export const authService = {
@@ -124,7 +129,7 @@ export const authService = {
   },
 
   confirmForgotPassword: async (code: string) => {
-    if (!code) throw new Error('Verification code is required');
+    if (!code) throw new Error('Password reset code is required');
 
     const token = await prisma.verificationToken.findFirst({
       where: {
@@ -136,7 +141,28 @@ export const authService = {
 
     if (!token) throw new Error('Invalid or expired verification code');
 
-    // TODO: return jwt token for password reset
+    // Generates a JWT for password reset, valid for 10 minutes
+    const jwtToken = jwt.sign(
+      { userId: token.userId, type: 'password_reset' },
+      PASSWORD_RESET_SECRET as string,
+      { expiresIn: PASSWORD_RESET_DURATION / 1000 }
+    );
+    return jwtToken;
+  },
+
+  resetPassword: async (newPassword: string, confirmNewPassword: string, token: string, ) => {
+    if (!newPassword) throw new Error('New password are required');
+    if (!confirmNewPassword) throw new Error('Confirm new password is required');
+    if (!token) throw new Error('Token is required');
+    const decoded = jwt.verify(token, PASSWORD_RESET_SECRET as string) as unknown as { userId: string; };
+
+    const saltRounds = 12;
+    const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+
+    await prisma.user.update({
+      where: { id: Number(decoded.userId) },
+      data: { hashedPassword },
+    });
   },
 
   loginUser: async (email: string, password: string) => {
@@ -153,12 +179,18 @@ export const authService = {
       {
         userId: user.id,
       },
-      JWT_SECRET_KEY,
-      { expiresIn: '1h' } // Token expires in 1 hour
+      AUTH_SECRET as string,
+      { expiresIn: Math.floor(PASSWORD_RESET_DURATION / 1000) }
     );
 
     return token;
   },
+
+  logoutUser: async (token: string) => {
+    // Invalidate the user's session by blacklisting JWT
+    console.log('Logging out user with token:', token);
+  },
+
 
   getMe: async (userId: string) => {
     const user = await prisma.user.findUnique({ where: { id: Number(userId) } });

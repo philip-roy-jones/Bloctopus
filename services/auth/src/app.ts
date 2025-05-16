@@ -1,13 +1,12 @@
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes';
 import cookieParser from 'cookie-parser';
+import { WEB_URL } from './config';
 
-dotenv.config();
 const app = express();
 const port = 1111;
-const appUrl = process.env.APP_URL || "http://localhost:5173";
+const appUrl = WEB_URL || "http://localhost:5173";
 
 app.use(cors({ origin: appUrl, credentials: true }));
 app.use(cookieParser());

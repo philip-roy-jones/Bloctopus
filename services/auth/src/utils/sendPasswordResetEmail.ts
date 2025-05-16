@@ -1,16 +1,15 @@
 import sgMail from '@sendgrid/mail';
-import dotenv from 'dotenv';
+import { WEB_URL } from '../config';
+import { MAILER_API_KEY } from '../config';
 
-dotenv.config();
-
-if (!process.env.MAILER_API_KEY) {
+if (!MAILER_API_KEY) {
   throw new Error('MAILER_API_KEY is not defined in the environment variables');
 }
 
-sgMail.setApiKey(process.env.MAILER_API_KEY);
+sgMail.setApiKey(MAILER_API_KEY);
 
 export const sendPasswordResetEmail = async (email: string, passwordResetCode: string) => {
-  const pageLink = `${process.env.APP_URL}/forgot/confirm`;
+  const pageLink = `${WEB_URL}/forgot/confirm`;
   const resetLink = `${pageLink}?email=${encodeURIComponent(email)}`;
   const resetLinkWithCode = `${pageLink}?email=${encodeURIComponent(email)}&code=${passwordResetCode}`;
 
@@ -48,5 +47,4 @@ export const sendPasswordResetEmail = async (email: string, passwordResetCode: s
   };
 
   await sgMail.send(msg);
-  console.log('Password reset email sent to:', email);
 };

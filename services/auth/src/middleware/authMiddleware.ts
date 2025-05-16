@@ -1,11 +1,7 @@
 import { AuthRequest, UserPayload } from "../@types/express";
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
-
-dotenv.config();
-
-const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY as string;
+import { AUTH_SECRET } from "../config";
 
 export const authenticate = (req: AuthRequest, res: Response, next: NextFunction): void => {
   const token = req.cookies.sessionCookie;
@@ -15,8 +11,13 @@ export const authenticate = (req: AuthRequest, res: Response, next: NextFunction
     return;
   }
 
+  if (!AUTH_SECRET) {
+    res.status(500).json({ message: "Server error. Please try again later." });
+    return;
+  }
+
   try {
-    const decoded = jwt.verify(token, JWT_SECRET_KEY);
+    const decoded = jwt.verify(token, AUTH_SECRET as string);
     if (typeof decoded === "object" && "userId" in decoded) {
       req.user = decoded as UserPayload;
       next();

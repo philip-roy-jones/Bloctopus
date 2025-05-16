@@ -1,16 +1,15 @@
 import sgMail from '@sendgrid/mail';
-import dotenv from 'dotenv';
+import { WEB_URL } from '../config';
+import { MAILER_API_KEY } from '../config';
 
-dotenv.config();
-
-if (!process.env.MAILER_API_KEY) {
+if (!MAILER_API_KEY) {
   throw new Error('MAILER_API_KEY is not defined in the environment variables');
 }
 
-sgMail.setApiKey(process.env.MAILER_API_KEY);
+sgMail.setApiKey(MAILER_API_KEY);
 
 export const sendVerificationEmail = async (email: string, verificationCode: string) => {
-  const pageLink = `${process.env.APP_URL}/register/confirm`;
+  const pageLink = `${WEB_URL}/register/confirm`;
   const verificationLink = `${pageLink}?email=${encodeURIComponent(email)}`;
   const verificationLinkWithCode = `${pageLink}?email=${encodeURIComponent(email)}&code=${verificationCode}`;
 
