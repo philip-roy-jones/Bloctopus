@@ -1,9 +1,14 @@
-import React, {useState} from "react";
+import { sendPasswordResetEmail } from "@/services/authService";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useBanner } from "@/context/BannerContext";
 
 const ForgotPasswordForm: React.FC = () => {
   const [email, setEmail] = useState("");
+  const navigate = useNavigate();
+  const { setBanner } = useBanner();
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!email) {
       alert("Please enter your email address.");
@@ -15,8 +20,16 @@ const ForgotPasswordForm: React.FC = () => {
       return;
     }
 
-    const resetCode = Math.floor(100000 + Math.random() * 900000);
-    alert(`Password reset link sent to ${email}\n\n\nFOR MILESTONE 1 PURPOSES: YOUR CODE IS: ${resetCode}\n\n\nPLEASE USE THIS LINK: http:localhost:5173/reset/${resetCode}`);
+    try {
+      await sendPasswordResetEmail(email);
+      navigate("/forgot/confirm");
+    } catch (error) {
+      console.error("Failed to send password reset email:", error);
+      setBanner(
+        "Failed to send password reset email. Please try again.",
+        "error"
+      );
+    }
   };
 
   return (
