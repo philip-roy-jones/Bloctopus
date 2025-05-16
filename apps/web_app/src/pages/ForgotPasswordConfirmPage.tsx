@@ -1,59 +1,27 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ForgotPasswordConfirmForm from "@/components/ForgotPasswordConfirmForm";
+import ResetPasswordForm from "@/components/ResetPasswordForm";
 
 const ForgotPasswordConfirmPage: React.FC = () => {
-  const [isCodeSubmitted, setIsCodeSubmitted] = useState(false);
   const navigate = useNavigate();
-
-  const handleCodeSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle form submission logic here
-    console.log("Code submitted");
-    setIsCodeSubmitted(true); // Switch to the new password form
-  };
-
-  const handlePasswordSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle new password submission logic here
-    console.log("Password updated");
-    navigate("/login"); // Redirect to login page after password reset
-  };
+  const [successfulCode, setSuccessfulCode] = useState(false);
+  const [successfulReset, setSuccessfulReset] = useState(false);
 
   return (
     <div>
       <h1>Reset Your Password</h1>
-      {!isCodeSubmitted ? (
-        <form onSubmit={handleCodeSubmit}>
-          <label htmlFor="resetCode">Enter your reset code:</label>
-          <input
-            type="text"
-            id="resetCode"
-            name="resetCode"
-            required
-            placeholder="Enter code"
-          />
-          <button type="submit">Submit</button>
-        </form>
+      {!successfulCode ? (
+      <div>
+        <h2>Enter the code sent to your email</h2>
+        <p>Please check your spam inbox as well</p>
+        <ForgotPasswordConfirmForm setSuccessfulCode={setSuccessfulCode} />
+      </div>
       ) : (
-        <form onSubmit={handlePasswordSubmit}>
-          <label htmlFor="newPassword">Enter your new password:</label>
-          <input
-            type="password"
-            id="newPassword"
-            name="newPassword"
-            required
-            placeholder="New password"
-          />
-          <label htmlFor="confirmPassword">Confirm your new password:</label>
-          <input
-            type="password"
-            id="confirmPassword"
-            name="confirmPassword"
-            required
-            placeholder="Confirm password"
-          />
-          <button type="submit">Reset Password</button>
-        </form>
+      <div>
+        <h2>Reset Your Password</h2>
+        <ResetPasswordForm setSuccessfulReset={setSuccessfulReset} />
+      </div>
       )}
     </div>
   );
