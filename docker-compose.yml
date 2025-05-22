@@ -22,5 +22,22 @@ services:
     env_file:
       - .env
 
+  tasks-database:
+    image: "mysql:latest"
+    ports:
+        - "6844:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: "password"
+      MYSQL_DATABASE: ${TASKS_DB_NAME}
+      MYSQL_USER: ${TASKS_DB_USER}
+      MYSQL_PASSWORD: ${TASKS_DB_PASSWORD}
+      MYSQL_PORT: 3306
+    volumes:
+      - tasks-data:/var/lib/mysql
+    env_file:
+      - .env
+
+# TODO: In prod, containerize app and services and only allow requests within the docker network
 volumes:
   auth-data:
+  tasks-data:
