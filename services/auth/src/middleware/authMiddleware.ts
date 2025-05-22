@@ -1,7 +1,7 @@
 import { AuthRequest, UserPayload } from "../@types/express";
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import { AUTH_SECRET } from "../config";
+import { AUTH_SECRET } from "../config/config";
 
 export const authenticate = (req: AuthRequest, res: Response, next: NextFunction): void => {
   const token = req.cookies.sessionCookie;

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "concurrently -k --names \"web_app,auth\" --prefix-colors \"cyan,magenta\" \"npm --workspace apps/web_app run dev\" \"npm --workspace services/auth run dev\""
+    "dev": "concurrently -k --names \"web_app,auth,tasks\" --prefix-colors \"cyan,magenta,yellow\" \"npm --workspace apps/web_app run dev\" \"npm --workspace services/auth run dev\" \"npm --workspace services/tasks run dev\""
   },
   "repository": {
     "type": "git",
@@ -20,9 +20,7 @@
   "homepage": "https://github.com/philip-roy-jones/CS361-Project#readme",
   "workspaces": [
     "apps/web_app",
-    "services/auth"
-  ],
-  "devDependencies": {
-    "concurrently": "^9.1.2"
-  }
+    "services/auth",
+    "services/tasks"
+  ]
 }

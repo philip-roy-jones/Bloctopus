@@ -1,7 +1,27 @@
 import { RequestHandler } from 'express';
 import { authService } from '../services/authService';
 import { AuthRequest } from '../@types/express';
-import { PASSWORD_RESET_DURATION, SESSION_EXPIRATION } from '../config';
+import { PASSWORD_RESET_DURATION, SESSION_EXPIRATION } from '../config/config';
+
+export const validate: RequestHandler = async (req: AuthRequest, res): Promise<void> => {
+  try {
+    if (req.get('X-Internal-Request') !== 'true') {
+      res.status(403).json({ message: 'Forbidden' });
+      return;
+    }
+
+    if (req.user) {
+      res.setHeader('X-User-ID', req.user.userId);
+    } else {
+      res.status(400).json({ error: 'User information is missing' });
+      return;
+    }
+    res.sendStatus(200);
+  } catch (error: any) {
+    console.error('Error setting headers:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}
 
 export const register: RequestHandler = async (req, res) => {
   try {
@@ -71,6 +91,7 @@ export const resetPassword: RequestHandler = async (req, res) => {              
 }
 
 export const login: RequestHandler = async (req, res) => {
+  console.log("login route hit");
   try {
     const { email, password } = req.body;
     const jwtToken = await authService.loginUser(email, password);

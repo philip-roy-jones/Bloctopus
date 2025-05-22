@@ -1,6 +1,3 @@
-// services/authService.ts
-import { AUTH_SERVICE_URL } from "@/config";
-
 export async function registerUser({
   email,
   password,
@@ -13,7 +10,7 @@ export async function registerUser({
   acceptedTerms: boolean;
 }): Promise<void> {
   try {
-    const response = await fetch(`${AUTH_SERVICE_URL}/api/register`, {
+    const response = await fetch(`/api/auth/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -40,7 +37,7 @@ export async function confirmRegistration({
   verificationCode: string;
 }): Promise<void> {
   try {
-    const response = await fetch(`${AUTH_SERVICE_URL}/api/register/confirm`, {
+    const response = await fetch(`/api/auth/register/confirm`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -61,7 +58,7 @@ export async function confirmRegistration({
 
 export const sendPasswordResetEmail = async (email: string): Promise<void> => {
   try {
-    const response = await fetch(`${AUTH_SERVICE_URL}/api/forgot`, {
+    const response = await fetch(`/api/auth/forgot`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -82,7 +79,7 @@ export const sendPasswordResetEmail = async (email: string): Promise<void> => {
 
 export const confirmPasswordReset = async (code: string): Promise<void> => {
   try {
-    const response = await fetch(`${AUTH_SERVICE_URL}/api/forgot/confirm`, {
+    const response = await fetch(`/api/auth/forgot/confirm`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -102,7 +99,7 @@ export const confirmPasswordReset = async (code: string): Promise<void> => {
 
 export const resetPassword = async (newPassword: string, confirmPassword: string): Promise<void> => {
   try {
-    const response = await fetch(`${AUTH_SERVICE_URL}/api/forgot/reset`, {
+    const response = await fetch(`/api/auth/forgot/reset`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

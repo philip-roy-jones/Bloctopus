@@ -1,5 +1,7 @@
 import app from './app';
 
-app.listen(1111, () => {
-  console.log(`Server is running on http://localhost:1111`);
+const port = 1111;
+
+app.listen(port, '0.0.0.0', () => {
+  console.log(`Auth service is running on port ${port}`);
 });

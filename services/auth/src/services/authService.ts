@@ -3,7 +3,7 @@ import { PrismaClient } from '../generated/prisma';
 import { sendVerificationEmail } from '../utils/sendVerificationEmail';
 import { sendPasswordResetEmail } from '../utils/sendPasswordResetEmail';
 import jwt from 'jsonwebtoken';
-import { AUTH_SECRET, PASSWORD_RESET_SECRET, PASSWORD_RESET_DURATION } from '../config';
+import { AUTH_SECRET, PASSWORD_RESET_SECRET, PASSWORD_RESET_DURATION } from '../config/config';
 
 if (!AUTH_SECRET) {
   throw new Error('AUTH_SECRET is not defined in the environment variables');
@@ -187,7 +187,7 @@ export const authService = {
   },
 
   logoutUser: async (token: string) => {
-    // Invalidate the user's session by blacklisting JWT
+    // TODO: Invalidate the user's session by blacklisting JWT
     console.log('Logging out user with token:', token);
   },
 

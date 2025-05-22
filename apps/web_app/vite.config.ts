@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
 import path from 'path'
 import dotenv from 'dotenv';
+import { API_GATEWAY_URL } from './src/config/config';
 
 dotenv.config();
 
@@ -11,6 +12,15 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src"),
+    }
+  },
+  server: {
+    proxy: {
+      '/api': {
+        target: API_GATEWAY_URL,
+        changeOrigin: true,
+        secure: false,
+      }
     }
   }
 })

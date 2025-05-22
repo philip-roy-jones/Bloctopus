@@ -1,6 +1,6 @@
 import sgMail from '@sendgrid/mail';
-import { WEB_URL } from '../config';
-import { MAILER_API_KEY } from '../config';
+import { WEB_URL } from '../config/config';
+import { MAILER_API_KEY } from '../config/config';
 
 if (!MAILER_API_KEY) {
   throw new Error('MAILER_API_KEY is not defined in the environment variables');
