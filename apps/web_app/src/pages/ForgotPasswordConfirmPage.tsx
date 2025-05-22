@@ -4,9 +4,7 @@ import ForgotPasswordConfirmForm from "@/components/ForgotPasswordConfirmForm";
 import ResetPasswordForm from "@/components/ResetPasswordForm";
 
 const ForgotPasswordConfirmPage: React.FC = () => {
-  const navigate = useNavigate();
   const [successfulCode, setSuccessfulCode] = useState(false);
-  const [successfulReset, setSuccessfulReset] = useState(false);
 
   return (
     <div>
@@ -20,7 +18,7 @@ const ForgotPasswordConfirmPage: React.FC = () => {
       ) : (
       <div>
         <h2>Reset Your Password</h2>
-        <ResetPasswordForm setSuccessfulReset={setSuccessfulReset} />
+        <ResetPasswordForm />
       </div>
       )}
     </div>

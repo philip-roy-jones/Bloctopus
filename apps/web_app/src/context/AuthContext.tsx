@@ -6,7 +6,6 @@ import React, {
   ReactNode,
 } from "react";
 import { User, AuthContextType } from "@/types/AuthContext";
-import { AUTH_SERVICE_URL } from "@/config";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -18,7 +17,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // 🟡 1. Fetch user info (e.g. on page refresh or app start)
   const fetchUser = async () => {
     try {
-      const res = await fetch(`${AUTH_SERVICE_URL}/api/me`, {
+      const res = await fetch(`/api/auth/me`, {
         credentials: "include", // Send cookies with the request
       });
 
@@ -35,7 +34,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // 🟢 2. Login — no token is returned, just rely on cookie
   const login = async (credentials: { email: string; password: string }) => {
-    const response = await fetch(`${AUTH_SERVICE_URL}/api/login`, {
+    const response = await fetch(`/api/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include", // Important for sending cookies
@@ -53,7 +52,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // 🔴 3. Logout — backend clears cookie
   const logout = async () => {
-    await fetch(`${AUTH_SERVICE_URL}/api/logout`, {
+    await fetch(`/api/auth/logout`, {
       method: "POST",
       credentials: "include",
     });

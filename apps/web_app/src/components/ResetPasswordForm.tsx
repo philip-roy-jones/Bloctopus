@@ -2,11 +2,7 @@ import React, {useState} from "react"
 import { useNavigate } from "react-router-dom";
 import { resetPassword } from "@/services/authService";
 
-interface ResetPasswordFormProps {
-  setSuccessfulReset: (value: boolean) => void;
-}
-
-const ResetPasswordForm: React.FC<ResetPasswordFormProps> = () => {
+const ResetPasswordForm: React.FC = () => {
   const navigate = useNavigate();
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");

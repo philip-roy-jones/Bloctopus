@@ -14,6 +14,7 @@ const HomePage: React.FC = () => {
   return (
     <>
       <div>
+        <h1>Task List Application</h1>
         <h2>Welcome, {user?.displayName}</h2>
         <p>Your email: {user?.email}</p>
         <p>Your role: {user?.role}</p>
