@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import { PrismaClient } from '../generated/prisma';
-import { sendVerificationEmail } from '../utils/sendVerificationEmail';
-import { sendPasswordResetEmail } from '../utils/sendPasswordResetEmail';
+import { sendVerificationEmail } from '../helpers/sendVerificationEmail';
+import { sendPasswordResetEmail } from '../helpers/sendPasswordResetEmail';
 import jwt from 'jsonwebtoken';
 import { AUTH_SECRET, PASSWORD_RESET_SECRET, PASSWORD_RESET_DURATION } from '../config/config';
 
@@ -205,3 +205,9 @@ export const authService = {
     };
   }
 };
+
+// Ensure Prisma disconnects when the application shuts down
+process.on('SIGINT', async () => {
+  await prisma.$disconnect();
+  process.exit(0);
+});
