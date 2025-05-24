@@ -1,10 +1,10 @@
 {
-  "name": "project",
+  "name": "taskify",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "concurrently -k --names \"web_app,auth,tasks\" --prefix-colors \"cyan,magenta,yellow\" \"npm --workspace apps/web_app run dev\" \"npm --workspace services/auth run dev\" \"npm --workspace services/tasks run dev\""
+      "dev": "docker compose up --build"
   },
   "repository": {
     "type": "git",
@@ -17,10 +17,5 @@
   "bugs": {
     "url": "https://github.com/philip-roy-jones/CS361-Project/issues"
   },
-  "homepage": "https://github.com/philip-roy-jones/CS361-Project#readme",
-  "workspaces": [
-    "apps/web_app",
-    "services/auth",
-    "services/tasks"
-  ]
+  "homepage": "https://github.com/philip-roy-jones/CS361-Project#readme"
 }
