@@ -1,0 +1,25 @@
+services:
+  auth-service:
+    volumes:
+      - ./services/auth:/app:cached
+      - auth-node-modules:/app/node_modules
+    environment:
+      - NODE_ENV=development
+    command: sh -c "npx prisma generate && npm run dev"
+
+  tasks-service:
+    volumes:
+      - ./services/tasks:/app:cached
+      - tasks-node-modules:/app/node_modules
+    environment:
+      - NODE_ENV=development
+    command: sh -c "npx prisma generate && npm run dev"
+
+  api-gateway:
+    volumes:
+      - ./api-gateway/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./api-gateway/conf.d:/etc/nginx/conf.d:ro
+
+volumes:
+  auth-node-modules:
+  tasks-node-modules:
