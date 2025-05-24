@@ -91,7 +91,6 @@ export const resetPassword: RequestHandler = async (req, res) => {              
 }
 
 export const login: RequestHandler = async (req, res) => {
-  console.log("login route hit");
   try {
     const { email, password } = req.body;
     const jwtToken = await authService.loginUser(email, password);
