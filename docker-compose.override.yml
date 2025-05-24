@@ -1,7 +1,7 @@
 services:
   auth-service:
     volumes:
-      - ./services/auth:/app:cached
+      - ./services/auth:/app
       - auth-node-modules:/app/node_modules
     environment:
       - NODE_ENV=development
@@ -17,14 +17,14 @@ services:
 
   web-app:
     volumes:
-      - ./apps/web_app:/app:cached
+      - ./apps/web_app:/app
       - web-app-node-modules:/app/node_modules
     environment:
       - NODE_ENV=development
 
   tasks-service:
     volumes:
-      - ./services/tasks:/app:cached
+      - ./services/tasks:/app
       - tasks-node-modules:/app/node_modules
     environment:
       - NODE_ENV=development
