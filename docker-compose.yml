@@ -7,6 +7,21 @@ services:
       - ./api-gateway/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./api-gateway/conf.d:/etc/nginx/conf.d:ro
 
+  auth-service:
+    build:
+      context: ./services/auth
+    volumes:
+      - ./services/auth:/app
+      - /app/node_modules
+    ports:
+      - "1111:1111"
+    environment:
+      - NODE_ENV=development
+    env_file:
+      - ./services/auth/.env
+    depends_on:
+      - auth-database
+
   auth-database:
     image: "mysql:latest"
     ports:
