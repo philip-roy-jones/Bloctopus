@@ -9,6 +9,18 @@ services:
       - tasks-service
     command: ["/wait-for-services.sh"]
 
+  web-app:
+    build:
+      context: ./apps/web_app
+    ports:
+      - "5173:5173"
+    environment:
+      - NODE_ENV=production
+    env_file:
+      - ./apps/web_app/.env
+    depends_on:
+    - api-gateway
+
   auth-service:
     build:
       context: ./services/auth

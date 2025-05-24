@@ -15,6 +15,13 @@ services:
         npm run dev
       "
 
+  web-app:
+    volumes:
+      - ./apps/web_app:/app:cached
+      - web-app-node-modules:/app/node_modules
+    environment:
+      - NODE_ENV=development
+
   tasks-service:
     volumes:
       - ./services/tasks:/app:cached
@@ -37,5 +44,6 @@ services:
       - ./api-gateway/conf.d:/etc/nginx/conf.d:ro
 
 volumes:
+  web-app-node-modules:
   auth-node-modules:
   tasks-node-modules:
