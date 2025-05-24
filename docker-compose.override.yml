@@ -5,7 +5,15 @@ services:
       - auth-node-modules:/app/node_modules
     environment:
       - NODE_ENV=development
-    command: sh -c "npx prisma generate && npm run dev"
+    command: >
+      sh -c "
+        until nc -z auth-database 3306; do
+          echo 'Waiting for auth-database...'; sleep 1;
+        done &&
+        npx prisma generate &&
+        npx prisma migrate deploy &&
+        npm run dev
+      "
 
   tasks-service:
     volumes:
@@ -13,7 +21,15 @@ services:
       - tasks-node-modules:/app/node_modules
     environment:
       - NODE_ENV=development
-    command: sh -c "npx prisma generate && npm run dev"
+    command: >
+      sh -c "
+        until nc -z tasks-database 3306; do
+          echo 'Waiting for tasks-database...'; sleep 1;
+        done &&
+        npx prisma generate &&
+        npx prisma migrate deploy &&
+        npm run dev
+      "
 
   api-gateway:
     volumes:
