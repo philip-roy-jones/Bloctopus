@@ -1,6 +1,6 @@
 #!/bin/sh
 
-SERVICES="auth-service:1111 tasks-service:2222"
+SERVICES="web-app:5173 auth-service:1111 tasks-service:2222"
 
 for SERVICE in $SERVICES; do
   HOST=$(echo "$SERVICE" | cut -d':' -f1)
