@@ -21,6 +21,12 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
       }
-    }
+    },
+    watch: {
+      usePolling: true,
+    },
+    port: 5173,
+    host: true,
+    strictPort: true
   }
 })

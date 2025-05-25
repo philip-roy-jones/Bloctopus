@@ -10,8 +10,12 @@ COPY package*.json ./
 # Install dependencies
 RUN npm install
 
+# Set path so that the node_modules binaries are available globally
+ENV PATH="/app/node_modules/.bin:$PATH"
+
 # Copy the rest of the application code to the working directory
 COPY . .
 
 # Command to run the app
-CMD ["npm", "run", "dev"]
+# TODO: not correct for production
+CMD ["npm", "run", "start"]
