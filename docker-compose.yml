@@ -5,9 +5,9 @@ services:
     ports:
       - "80:80"
     depends_on:
+      - web-app
       - auth-service
       - tasks-service
-      - web-app
     command: ["/wait-for-services.sh"]
 
   web-app:
