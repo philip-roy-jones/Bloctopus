@@ -18,4 +18,5 @@ RUN npm install
 COPY . .
 
 # Start the application
+# TODO: npm script no longer exists (using npm messes up PID within container), must build and start here
 CMD ["npm", "run", "start"]

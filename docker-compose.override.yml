@@ -20,15 +20,7 @@ services:
       - tasks-node-modules:/app/node_modules
     environment:
       - NODE_ENV=development
-    command: >
-      sh -c "
-        until nc -z tasks-database 3306; do
-          echo 'Waiting for tasks-database...'; sleep 1;
-        done &&
-        npx prisma generate &&
-        npx prisma migrate deploy &&
-        npm run dev
-      "
+    command: ["/app/entrypoint.sh"]
 
   api-gateway:
     volumes:
