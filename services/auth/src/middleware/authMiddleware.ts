@@ -17,7 +17,7 @@ export const authenticate = (req: AuthRequest, res: Response, next: NextFunction
   }
 
   try {
-    const decoded = jwt.verify(token, AUTH_SECRET as string);
+    const decoded = jwt.verify(token, AUTH_SECRET as string);           // Throws error if token is invalid
     if (typeof decoded === "object" && "userId" in decoded) {
       req.user = decoded as UserPayload;
       next();

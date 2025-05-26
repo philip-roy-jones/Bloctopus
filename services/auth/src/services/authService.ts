@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import { sendVerificationEmail } from '../helpers/sendVerificationEmail';
 import { sendPasswordResetEmail } from '../helpers/sendPasswordResetEmail';
 import jwt from 'jsonwebtoken';
-import { AUTH_SECRET, PASSWORD_RESET_SECRET, PASSWORD_RESET_DURATION } from '../config/config';
+import { AUTH_SECRET, PASSWORD_RESET_SECRET, PASSWORD_RESET_DURATION, SESSION_EXPIRATION } from '../config/config';
 
 if (!AUTH_SECRET) {
   throw new Error('AUTH_SECRET is not defined in the environment variables');
@@ -180,9 +180,8 @@ export const authService = {
         userId: user.id,
       },
       AUTH_SECRET as string,
-      { expiresIn: Math.floor(PASSWORD_RESET_DURATION / 1000) }
+      { expiresIn: Math.floor(SESSION_EXPIRATION / 1000) }
     );
-
     return token;
   },
 
