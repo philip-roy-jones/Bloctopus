@@ -1,10 +1,14 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { getTasks } from "@/services/taskService";
+import NewTask from "@/components/NewTask";
+import { Task } from "@/types/Task";
+import DeleteTaskButton from "@/components/DeleteTaskButton";
 
 const HomePage: React.FC = () => {
   const { logout, user } = useAuth();
+  const [tasks, setTasks] = useState<Task[]>([]);
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
@@ -12,8 +16,20 @@ const HomePage: React.FC = () => {
     navigate("/login");
   };
 
+  const addTask = (newTask: Task) => {
+    setTasks((prevTasks) => [...prevTasks, newTask]);
+  };
+
+  const removeTask = (taskId: string) => {
+    setTasks((prevTasks) => prevTasks.filter(task => task.id !== taskId));
+  };
+
   useEffect(() => {
-    getTasks();
+    const fetchTasks = async () => {
+      const data = await getTasks();
+      setTasks(data);
+    };
+    fetchTasks();
   }, []);
 
   return (
@@ -28,7 +44,12 @@ const HomePage: React.FC = () => {
       </div>
       <div>
         <h2>Tasks</h2>
-        <ul></ul>
+        <NewTask onTaskCreated={addTask}/>
+        <ul>
+            {tasks && tasks.map((task) => (
+            <li key={task.id}>{task.title} - {task.description} - {<DeleteTaskButton taskId={task.id} onTaskDeleted={removeTask}/>}</li>
+            ))}
+        </ul>
       </div>
       <div>
         <button onClick={handleSignOut}>Sign Out</button>

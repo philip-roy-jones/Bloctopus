@@ -7,19 +7,14 @@ const prisma = new PrismaClient();
 
 export const taskService = {
   async createTask(userId: string, data: TaskData) {
-    const categoryExists = await prisma.Category.findUnique({
-      where: { id: data.categoryId },
-    });
-
-    if (!categoryExists) {
-      throw new NotFoundError('Category does not exist');
-    }
+    console.log('Creating task with data:', data);
 
     return await prisma.$transaction(async (prisma: PrismaClient) => {
       const task = await prisma.task.create({
         data: {
-          userId,
-          data
+          userId: parseInt(userId, 10),
+          ...data,
+          completed: false, // Override completed as false just in case, default is already false, but user can devtools it to true
         },
       });
 
@@ -47,11 +42,11 @@ export const taskService = {
     });
   },
 
-  async getAllTasks(userId: number, page: number = 1, pageSize: number = 10) {
+  async getAllTasks(userId: string, page: number = 1, pageSize: number = 10) {
     const skip = (page - 1) * pageSize;
 
     return await prisma.task.findMany({
-      where: { userId },
+      where: { userId: parseInt(userId, 10) },
       skip,
       take: pageSize,
     });
@@ -70,7 +65,7 @@ export const taskService = {
     await verifyTaskOwnership(userId, id);
 
     return await prisma.task.delete({
-      where: { id },
+      where: { id: parseInt(id, 10) },
     });
   },
 };
