@@ -11,7 +11,6 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   // 🟡 1. Fetch user info (e.g. on page refresh or app start)
@@ -47,7 +46,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const fetchedUser = await fetchUser(); // Fetch user info after login
     setUser(fetchedUser);
-    setIsAuthenticated(!!fetchedUser);
   };
 
   // 🔴 3. Logout — backend clears cookie
@@ -76,14 +74,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     loadUser();
   }, []);
 
-  useEffect(() => {
-    // This useEffect will always reference the latest `user` value, no mismatches in state
-    setIsAuthenticated(!!user);
-  }, [user]);
-
   return (
     <AuthContext.Provider
-      value={{ user, login, logout, isAuthenticated, isLoading }}
+      value={{ user, login, logout, isAuthenticated: !!user, isLoading }}
     >
       {children}
     </AuthContext.Provider>

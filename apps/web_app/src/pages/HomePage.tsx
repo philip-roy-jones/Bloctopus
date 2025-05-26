@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { getTasks } from "@/services/taskService";
 
 const HomePage: React.FC = () => {
   const { logout, user } = useAuth();
@@ -12,8 +13,8 @@ const HomePage: React.FC = () => {
   };
 
   useEffect(() => {
-    
-  });
+    getTasks();
+  }, []);
 
   return (
     <>
@@ -27,9 +28,7 @@ const HomePage: React.FC = () => {
       </div>
       <div>
         <h2>Tasks</h2>
-        <ul>
-
-        </ul>
+        <ul></ul>
       </div>
       <div>
         <button onClick={handleSignOut}>Sign Out</button>

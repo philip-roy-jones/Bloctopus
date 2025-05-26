@@ -9,19 +9,16 @@ interface PrivateRouteProps {
 
 export default function PrivateRoute({ children, allowedRoles }: PrivateRouteProps) {
   const { isAuthenticated, isLoading, user } = useAuth();
-
   
+  let content: ReactNode = children;
+
   if (isLoading) {
-    return <div>Loading…</div>;
+    content = <div>Loading…</div>;
+  } else if (!isAuthenticated) {
+    content = <Navigate to="/login" />;
+  } else if (allowedRoles && !allowedRoles.includes(user!.role)) {
+    content = <Navigate to="/unauthorized" />;
   }
 
-  if (!isAuthenticated) {
-    return <Navigate to="/login" />;
-  }
-
-  if (allowedRoles && !allowedRoles.includes(user!.role)) {
-    return <Navigate to="/unauthorized" />;
-  }
-
-  return <>{children}</>;
+  return <>{content}</>;
 }

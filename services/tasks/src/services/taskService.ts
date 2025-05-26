@@ -47,7 +47,7 @@ export const taskService = {
     });
   },
 
-  async getAllTasks(userId: string, page: number = 1, pageSize: number = 10) {
+  async getAllTasks(userId: number, page: number = 1, pageSize: number = 10) {
     const skip = (page - 1) * pageSize;
 
     return await prisma.task.findMany({

@@ -7,6 +7,6 @@ const app = express();
 
 app.use(cors({ origin: "localhost:5173", credentials: true }));
 app.use(express.json());
-app.use('/api/tasks', internalOnly, taskRoutes);
+app.use('/api', internalOnly, taskRoutes);
 
 export default app;
