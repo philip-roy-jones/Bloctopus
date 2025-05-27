@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { getTasks } from "@/services/taskService";
-import NewTask from "@/components/NewTask";
+import NewTask from "@/components/tasks/NewTask";
 import { Task } from "@/types/Task";
-import DeleteTaskButton from "@/components/DeleteTaskButton";
+import DeleteTaskButton from "@/components/tasks/DeleteTaskButton";
 import EditTaskButton from "@/components/EditTaskButton";
 
 const HomePage: React.FC = () => {

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import ForgotPasswordConfirmForm from "@/components/ForgotPasswordConfirmForm";
-import ResetPasswordForm from "@/components/ResetPasswordForm";
+import ForgotPasswordConfirmForm from "@/components/auth/ForgotPasswordConfirmForm";
+import ResetPasswordForm from "@/components/auth/ResetPasswordForm";
 
 const ForgotPasswordConfirmPage: React.FC = () => {
   const [successfulCode, setSuccessfulCode] = useState(false);

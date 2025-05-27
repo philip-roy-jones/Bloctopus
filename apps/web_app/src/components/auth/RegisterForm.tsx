@@ -2,7 +2,7 @@ import { registerUser } from "@/services/authService";
 import React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Modal from "@/components/Modal";
+import Modal from "@/components/ui/Modal";
 
 const RegisterForm: React.FC = () => {
   const [email, setEmail] = useState("");

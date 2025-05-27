@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import RegisterConfirmForm from "@/components/RegisterConfirmForm";
+import RegisterConfirmForm from "@/components/auth/RegisterConfirmForm";
 import { confirmRegistration } from "@/services/authService";
 
 const RegisterConfirmPage: React.FC = () => {

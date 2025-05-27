@@ -16,7 +16,7 @@ const EditTaskButton: React.FC<EditTaskButtonProps> = ({ task, onTaskUpdated }) 
 
   return (
     <>
-      <button onClick={handleButtonClick}>Edit Task</button>
+      <button onClick={handleButtonClick}>Edit</button>
       <div>
         {isEditTaskOpen && <EditTask task={task} onTaskUpdated={onTaskUpdated} setIsEditTaskOpen={setIsEditTaskOpen} />}
       </div>

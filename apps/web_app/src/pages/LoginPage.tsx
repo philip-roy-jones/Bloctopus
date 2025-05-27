@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import LoginForm from "@/components/LoginForm";
+import LoginForm from "@/components/auth/LoginForm";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useBanner } from "@/context/BannerContext";
 
