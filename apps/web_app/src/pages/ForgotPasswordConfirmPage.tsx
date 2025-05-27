@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import ForgotPasswordConfirmForm from "@/components/auth/ForgotPasswordConfirmForm";
 import ResetPasswordForm from "@/components/auth/ResetPasswordForm";
 
