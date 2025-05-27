@@ -14,10 +14,13 @@ const NewTask: React.FC<NewTaskProps> = ({ onTaskCreated }) => {
     event.preventDefault();
     try {
       const createdTask = await createTask({
-      title,
-      description,
+        title,
+        description,
       });
       onTaskCreated(createdTask);
+      setTitle("");
+      setDescription("");
+      (event.target as HTMLFormElement).reset();
     } catch (error) {
       console.error("Failed to create task:", error);
     }

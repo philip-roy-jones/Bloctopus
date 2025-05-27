@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import { taskService } from '../services/taskService';
 import { TaskData } from '../types/TaskData';
 
+// TODO: Sanitize and validate input data properly (skipping for now for simplicity)
+
 export const getTasksByUser = async (req: Request, res: Response): Promise<void> => {
   try {
     const userId = req.headers['x-user-id'] as string;
@@ -48,6 +50,38 @@ export const createTask = async (req: Request, res: Response): Promise<void> => 
     res.status(500).json({ message: 'Internal server error' });
   }
 };
+
+export const updateTask = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const userId = req.headers['x-user-id'] as string;
+    if (!userId) {
+      res.status(400).json({ message: 'User ID is required' });
+      return;
+    }
+
+    const taskId = req.params.id;
+    if (!taskId) {
+      res.status(400).json({ message: 'Task ID is required' });
+      return;
+    }
+
+    const taskData: TaskData = req.body;
+
+    if (!taskData) {
+      res.status(400).json({ message: 'Task data is required' });
+      return;
+    }
+
+    const updatedTask = await taskService.updateTask(userId, taskId, taskData);
+
+    console.log('Task updated:', updatedTask);
+
+    res.status(200).json(updatedTask);
+  } catch (error) {
+    console.error('Error updating task:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+}
 
 export const deleteTask = async (req: Request, res: Response): Promise<void> => {
   try {

@@ -1,4 +1,4 @@
-import { Task } from "../types/Task";
+import { Task, UpdateTask } from "../types/Task";
 import { CreateTask } from "@/types/Task";
 
 export const getTasks = async (): Promise<Task[]> => {
@@ -47,6 +47,30 @@ export const createTask = async (task: CreateTask) => {
     throw error;
   }
 };
+
+export const updateTask = async (taskId: string, task: UpdateTask) => {
+  try {
+    const response = await fetch(`/api/tasks/${taskId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(task),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Failed to update task");
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Update task request failed:", error);
+    throw error;
+  }
+}
 
 export const deleteTask = async (taskId: string) => {
   try {

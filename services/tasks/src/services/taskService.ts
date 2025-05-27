@@ -56,7 +56,7 @@ export const taskService = {
     await verifyTaskOwnership(userId, id);
 
     return await prisma.task.update({
-      where: { id },
+      where: { id: parseInt(id, 10) },
       data,
     });
   },

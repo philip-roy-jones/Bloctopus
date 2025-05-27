@@ -5,6 +5,7 @@ import { getTasks } from "@/services/taskService";
 import NewTask from "@/components/NewTask";
 import { Task } from "@/types/Task";
 import DeleteTaskButton from "@/components/DeleteTaskButton";
+import EditTaskButton from "@/components/EditTaskButton";
 
 const HomePage: React.FC = () => {
   const { logout, user } = useAuth();
@@ -19,6 +20,12 @@ const HomePage: React.FC = () => {
   const addTask = (newTask: Task) => {
     setTasks((prevTasks) => [...prevTasks, newTask]);
   };
+
+  const changeTask = (updatedTask: Task) => {
+    setTasks((prevTasks) =>
+      prevTasks.map(task => task.id === updatedTask.id ? updatedTask : task)
+    );
+  }
 
   const removeTask = (taskId: string) => {
     setTasks((prevTasks) => prevTasks.filter(task => task.id !== taskId));
@@ -47,7 +54,13 @@ const HomePage: React.FC = () => {
         <NewTask onTaskCreated={addTask}/>
         <ul>
             {tasks && tasks.map((task) => (
-            <li key={task.id}>{task.title} - {task.description} - {<DeleteTaskButton taskId={task.id} onTaskDeleted={removeTask}/>}</li>
+            <li key={task.id}>
+              <input type="checkbox" disabled checked={task.completed} />
+              {task.title} - 
+              {task.description} - 
+              {<DeleteTaskButton taskId={task.id} onTaskDeleted={removeTask}/>} - 
+              {<EditTaskButton task={task} onTaskUpdated={changeTask}/>}
+            </li>
             ))}
         </ul>
       </div>

@@ -1,13 +1,12 @@
 // Interface for creating a task
 export interface CreateTask {
   title: string;
-  description: string;
+  description?: string;
 }
 
 // Interface for updating a task
 export interface UpdateTask {
-  id: string;
-  title?: string;
+  title: string;
   description?: string;
   completed?: boolean;
 }
