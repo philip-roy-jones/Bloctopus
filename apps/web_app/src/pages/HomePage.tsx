@@ -5,7 +5,7 @@ import { getTasks } from "@/services/taskService";
 import NewTask from "@/components/tasks/NewTask";
 import { Task } from "@/types/Task";
 import DeleteTaskButton from "@/components/tasks/DeleteTaskButton";
-import EditTaskButton from "@/components/EditTaskButton";
+import EditTaskButton from "@/components/tasks/EditTaskButton";
 
 const HomePage: React.FC = () => {
   const { logout, user } = useAuth();
