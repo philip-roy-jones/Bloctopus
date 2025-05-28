@@ -6,6 +6,23 @@ import NewTask from "@/components/tasks/NewTask";
 import { Task } from "@/types/Task";
 import DeleteTaskButton from "@/components/tasks/DeleteTaskButton";
 import EditTaskButton from "@/components/tasks/EditTaskButton";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 
 const HomePage: React.FC = () => {
   const { logout, user } = useAuth();
@@ -23,12 +40,12 @@ const HomePage: React.FC = () => {
 
   const changeTask = (updatedTask: Task) => {
     setTasks((prevTasks) =>
-      prevTasks.map(task => task.id === updatedTask.id ? updatedTask : task)
+      prevTasks.map((task) => (task.id === updatedTask.id ? updatedTask : task))
     );
-  }
+  };
 
   const removeTask = (taskId: string) => {
-    setTasks((prevTasks) => prevTasks.filter(task => task.id !== taskId));
+    setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
   };
 
   useEffect(() => {
@@ -51,19 +68,50 @@ const HomePage: React.FC = () => {
       </div>
       <div>
         <h2>Tasks</h2>
-        <NewTask onTaskCreated={addTask}/>
-        <ul>
-            {tasks && tasks.map((task) => (
-            <li key={task.id}>
-              <input type="checkbox" disabled checked={task.completed} />
-              {task.title} - 
-              {task.description} - 
-              {<DeleteTaskButton taskId={task.id} onTaskDeleted={removeTask}/>} - 
-              {<EditTaskButton task={task} onTaskUpdated={changeTask}/>}
-            </li>
+        <NewTask onTaskCreated={addTask} />
+        <div className="container w-64">
+          {tasks &&
+            tasks.map((task) => (
+              <Dialog>
+                <DialogTrigger className="w-full">
+                  <Card>
+                    <CardHeader className="text-left">
+                      <CardTitle>
+                        <Checkbox
+                          checked={task.completed}
+                          onCheckedChange={() =>
+                            changeTask({ ...task, completed: !task.completed })
+                          }
+                          className="mr-2"
+                        />
+                        {task.title}
+                      </CardTitle>
+                      <CardDescription>{task.description}</CardDescription>
+                    </CardHeader>
+                    <CardContent></CardContent>
+                    <CardFooter>
+                      <DeleteTaskButton
+                        taskId={task.id}
+                        onTaskDeleted={removeTask}
+                      />
+                      <EditTaskButton task={task} onTaskUpdated={changeTask} />
+                    </CardFooter>
+                  </Card>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Are you absolutely sure?</DialogTitle>
+                    <DialogDescription>
+                      This action cannot be undone. This will permanently delete
+                      your account and remove your data from our servers.
+                    </DialogDescription>
+                  </DialogHeader>
+                </DialogContent>
+              </Dialog>
             ))}
-        </ul>
+        </div>
       </div>
+
       <div>
         <button onClick={handleSignOut}>Sign Out</button>
       </div>
