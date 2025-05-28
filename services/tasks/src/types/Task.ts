@@ -1,4 +1,4 @@
-export interface TaskData { 
+export interface Task { 
   title?: string;
   description?: string;
   status?: string;
