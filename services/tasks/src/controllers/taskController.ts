@@ -4,7 +4,7 @@ import { Task } from '../types/Task';
 
 // TODO: Sanitize and validate input data properly (skipping for now for simplicity)
 
-export const getTasksByUser = async (req: Request, res: Response): Promise<void> => {
+export const getTasks = async (req: Request, res: Response): Promise<void> => {
   try {
     const userId = req.headers['x-user-id'] as string;
     if (!userId) {
