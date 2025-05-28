@@ -1,12 +1,12 @@
 import { PrismaClient } from '@prisma/client';
 import verifyTaskOwnership from '../helpers/verifyTaskOwnership';
 import verifyCategoryOwnership from '../helpers/verifyCategoryOwnership';
-import { TaskData } from '../types/TaskData';
+import { Task } from '../types/Task';
 
 const prisma = new PrismaClient();
 
 export const taskService = {
-  async createTask(userId: string, data: TaskData) {
+  async createTask(userId: string, data: Task) {
     console.log('Creating task with data:', data);
 
     return await prisma.$transaction(async (prisma: PrismaClient) => {
@@ -52,7 +52,7 @@ export const taskService = {
     });
   },
 
-  async updateTask(userId: string, id: string, data: TaskData) {
+  async updateTask(userId: string, id: string, data: Task) {
     await verifyTaskOwnership(userId, id);
 
     return await prisma.task.update({

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { taskService } from '../services/taskService';
-import { TaskData } from '../types/TaskData';
+import { Task } from '../types/Task';
 
 // TODO: Sanitize and validate input data properly (skipping for now for simplicity)
 
@@ -33,7 +33,7 @@ export const createTask = async (req: Request, res: Response): Promise<void> => 
       return;
     }
 
-    const taskData: TaskData = req.body; // Use TaskData type for taskData
+    const taskData: Task = req.body; // Use Task type for taskData
 
     if (!taskData || !taskData.title) {
       res.status(400).json({ message: 'Task data is required' });
@@ -65,7 +65,7 @@ export const updateTask = async (req: Request, res: Response): Promise<void> => 
       return;
     }
 
-    const taskData: TaskData = req.body;
+    const taskData: Task = req.body;
 
     if (!taskData) {
       res.status(400).json({ message: 'Task data is required' });
