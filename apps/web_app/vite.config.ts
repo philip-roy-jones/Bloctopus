@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
 import path from 'path'
+import tailwindcss from '@tailwindcss/vite';
 import dotenv from 'dotenv';
 import { API_GATEWAY_URL } from './src/config/config';
 
@@ -8,7 +9,7 @@ dotenv.config();
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src"),
