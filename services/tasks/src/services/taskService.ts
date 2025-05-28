@@ -6,7 +6,7 @@ import { Task } from '../types/Task';
 const prisma = new PrismaClient();
 
 export const taskService = {
-  async createTask(userId: string, data: Task) {
+  async create(userId: string, data: Task) {
     console.log('Creating task with data:', data);
 
     return await prisma.$transaction(async (prisma: PrismaClient) => {
@@ -35,14 +35,14 @@ export const taskService = {
     });
   },
 
-  async getTaskById(userId: string, id: string) {
+  async show(userId: string, id: string) {
     await verifyTaskOwnership(userId, id);
     return await prisma.task.findUnique({
       where: { id },
     });
   },
 
-  async getAllTasks(userId: string, page: number = 1, pageSize: number = 10) {
+  async index(userId: string, page: number = 1, pageSize: number = 10) {
     const skip = (page - 1) * pageSize;
 
     return await prisma.task.findMany({
@@ -52,7 +52,7 @@ export const taskService = {
     });
   },
 
-  async updateTask(userId: string, id: string, data: Task) {
+  async update(userId: string, id: string, data: Task) {
     await verifyTaskOwnership(userId, id);
 
     return await prisma.task.update({
@@ -61,7 +61,7 @@ export const taskService = {
     });
   },
 
-  async deleteTask(userId: string, id: string) {
+  async destroy(userId: string, id: string) {
     await verifyTaskOwnership(userId, id);
 
     return await prisma.task.delete({

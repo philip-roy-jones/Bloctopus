@@ -4,7 +4,7 @@ import { Task } from '../types/Task';
 
 // TODO: Sanitize and validate input data properly (skipping for now for simplicity)
 
-export const getTasks = async (req: Request, res: Response): Promise<void> => {
+export const index = async (req: Request, res: Response): Promise<void> => {
   try {
     const userId = req.headers['x-user-id'] as string;
     if (!userId) {
@@ -12,7 +12,7 @@ export const getTasks = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const tasks = await taskService.getAllTasks(
+    const tasks = await taskService.index(
       userId,
       parseInt(req.query.page as string, 10) || 1,
       parseInt(req.query.pageSize as string, 10) || 10
@@ -25,7 +25,7 @@ export const getTasks = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-export const createTask = async (req: Request, res: Response): Promise<void> => {
+export const create = async (req: Request, res: Response): Promise<void> => {
   try {
     const userId = req.headers['x-user-id'] as string;
     if (!userId) {
@@ -40,7 +40,7 @@ export const createTask = async (req: Request, res: Response): Promise<void> => 
       return;
     }
 
-    const task = await taskService.createTask(userId, taskData);
+    const task = await taskService.create(userId, taskData);
 
     console.log('Task created:', task);
 
@@ -51,7 +51,7 @@ export const createTask = async (req: Request, res: Response): Promise<void> => 
   }
 };
 
-export const updateTask = async (req: Request, res: Response): Promise<void> => {
+export const update = async (req: Request, res: Response): Promise<void> => {
   try {
     const userId = req.headers['x-user-id'] as string;
     if (!userId) {
@@ -72,7 +72,7 @@ export const updateTask = async (req: Request, res: Response): Promise<void> => 
       return;
     }
 
-    const updatedTask = await taskService.updateTask(userId, taskId, taskData);
+    const updatedTask = await taskService.update(userId, taskId, taskData);
 
     console.log('Task updated:', updatedTask);
 
@@ -83,7 +83,7 @@ export const updateTask = async (req: Request, res: Response): Promise<void> => 
   }
 }
 
-export const deleteTask = async (req: Request, res: Response): Promise<void> => {
+export const destroy = async (req: Request, res: Response): Promise<void> => {
   try {
     const userId = req.headers['x-user-id'] as string;
     if (!userId) {
@@ -97,7 +97,7 @@ export const deleteTask = async (req: Request, res: Response): Promise<void> => 
       return;
     }
 
-    await taskService.deleteTask(userId, taskId);
+    await taskService.destroy(userId, taskId);
 
     console.log(`Task with ID ${taskId} deleted`);
 
