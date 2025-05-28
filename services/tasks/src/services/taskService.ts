@@ -1,7 +1,6 @@
 import { PrismaClient } from '@prisma/client';
-import verifyTaskOwnership from '../helpers/verifyTaskOwnership';
-import verifyCategoryOwnership from '../helpers/verifyCategoryOwnership';
 import { Task } from '../types/Task';
+import { verifyOwnership } from '@/helpers/verifyOwnership';
 
 const prisma = new PrismaClient();
 
@@ -21,7 +20,7 @@ export const taskService = {
       if (data.categoryId) {
         const categoryId = data.categoryId;
 
-        await verifyCategoryOwnership(userId, categoryId);
+        await verifyOwnership('category', userId, categoryId);
 
         await prisma.taskCategory.create({
           data: {
@@ -36,7 +35,7 @@ export const taskService = {
   },
 
   async show(userId: string, id: string) {
-    await verifyTaskOwnership(userId, id);
+    await verifyOwnership('task', userId, id);
     return await prisma.task.findUnique({
       where: { id },
     });
@@ -53,7 +52,7 @@ export const taskService = {
   },
 
   async update(userId: string, id: string, data: Task) {
-    await verifyTaskOwnership(userId, id);
+    await verifyOwnership('task', userId, id);
 
     return await prisma.task.update({
       where: { id: parseInt(id, 10) },
@@ -62,7 +61,7 @@ export const taskService = {
   },
 
   async destroy(userId: string, id: string) {
-    await verifyTaskOwnership(userId, id);
+    await verifyOwnership('task', userId, id);
 
     return await prisma.task.delete({
       where: { id: parseInt(id, 10) },
