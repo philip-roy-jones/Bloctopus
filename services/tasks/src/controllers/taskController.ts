@@ -36,8 +36,6 @@ export const create = async (req: Request, res: Response, next: NextFunction): P
 
     const task = await taskService.create(userId, taskData);
 
-    console.log('Task created:', task);
-
     res.status(201).json(task);
   } catch (error) {
     next(error);
@@ -83,8 +81,6 @@ export const destroy = async (req: Request, res: Response, next: NextFunction): 
     }
 
     await taskService.destroy(userId, taskId);
-
-    console.log(`Task with ID ${taskId} deleted`);
 
     res.status(204).send();
   } catch (error) {
