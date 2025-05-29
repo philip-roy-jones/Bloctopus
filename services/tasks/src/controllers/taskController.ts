@@ -1,16 +1,14 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { taskService } from '../services/taskService';
 import { Task } from '../types/Task';
+import { getUserId } from '@/helpers/getUserId';
 
 // TODO: Sanitize and validate input data properly (skipping for now for simplicity)
 
-export const index = async (req: Request, res: Response): Promise<void> => {
+export const index = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const userId = req.headers['x-user-id'] as string;
-    if (!userId) {
-      res.status(400).json({ message: 'User ID is required' });
-      return;
-    }
+    const userId = getUserId(req, res);
+    if (!userId) return;
 
     const tasks = await taskService.index(
       userId,
@@ -20,18 +18,14 @@ export const index = async (req: Request, res: Response): Promise<void> => {
 
     res.status(200).json(tasks);
   } catch (error) {
-    console.error('Error fetching tasks:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    next(error);
   }
 };
 
-export const create = async (req: Request, res: Response): Promise<void> => {
+export const create = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const userId = req.headers['x-user-id'] as string;
-    if (!userId) {
-      res.status(400).json({ message: 'User ID is required' });
-      return;
-    }
+    const userId = getUserId(req, res);
+    if (!userId) return;
 
     const taskData: Task = req.body; // Use Task type for taskData
 
@@ -46,18 +40,14 @@ export const create = async (req: Request, res: Response): Promise<void> => {
 
     res.status(201).json(task);
   } catch (error) {
-    console.error('Error creating task:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    next(error);
   }
 };
 
-export const update = async (req: Request, res: Response): Promise<void> => {
+export const update = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const userId = req.headers['x-user-id'] as string;
-    if (!userId) {
-      res.status(400).json({ message: 'User ID is required' });
-      return;
-    }
+    const userId = getUserId(req, res);
+    if (!userId) return;
 
     const taskId = req.params.id;
     if (!taskId) {
@@ -74,22 +64,17 @@ export const update = async (req: Request, res: Response): Promise<void> => {
 
     const updatedTask = await taskService.update(userId, taskId, taskData);
 
-    console.log('Task updated:', updatedTask);
-
     res.status(200).json(updatedTask);
   } catch (error) {
-    console.error('Error updating task:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    console.log('Error updating task:', error);
+    next(error);
   }
 }
 
-export const destroy = async (req: Request, res: Response): Promise<void> => {
+export const destroy = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const userId = req.headers['x-user-id'] as string;
-    if (!userId) {
-      res.status(400).json({ message: 'User ID is required' });
-      return;
-    }
+    const userId = getUserId(req, res);
+    if (!userId) return;
 
     const taskId = req.params.id;
     if (!taskId) {
@@ -103,7 +88,6 @@ export const destroy = async (req: Request, res: Response): Promise<void> => {
 
     res.status(204).send();
   } catch (error) {
-    console.error('Error deleting task:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    next(error);
   }
 };
