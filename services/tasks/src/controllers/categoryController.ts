@@ -6,6 +6,8 @@ import { getUserId } from '@/helpers/getUserId';
 
 export const index = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
+    console.log('Fetching categories with query:', req.query);
+
     const userId = getUserId(req, res);
     if (!userId) return;
 

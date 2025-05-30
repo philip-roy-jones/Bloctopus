@@ -22,6 +22,25 @@ export const index = async (req: Request, res: Response, next: NextFunction): Pr
   }
 };
 
+export const show = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const userId = getUserId(req, res);
+    if (!userId) return;
+
+    const taskId = req.params.id;
+    if (!taskId) {
+      res.status(400).json({ message: 'Task ID is required' });
+      return;
+    }
+
+    const task = await taskService.show(userId, taskId);
+
+    res.status(200).json(task);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const create = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     const userId = getUserId(req, res);

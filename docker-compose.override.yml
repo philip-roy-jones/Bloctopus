@@ -23,6 +23,14 @@ services:
       - NODE_ENV=development
     command: ["/app/entrypoint.sh"]
 
+  notification-service:
+    volumes:
+      - ./services/notifications:/app
+      - notification-node-modules:/app/node_modules
+    environment:
+      - NODE_ENV=development
+    command: ["/app/entrypoint.sh"]
+
   api-gateway:
     volumes:
       - ./api-gateway/nginx.conf:/etc/nginx/nginx.conf:ro
@@ -32,3 +40,4 @@ volumes:
   web-app-node-modules:
   auth-node-modules:
   tasks-node-modules:
+  notification-node-modules:

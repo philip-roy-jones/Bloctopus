@@ -74,7 +74,31 @@ services:
     env_file:
       - .env
 
+  notification-service:
+    build:
+      context: ./services/notifications
+    ports:
+      - "3333:3333"
+    environment:
+      - NODE_ENV=production
+    env_file:
+      - ./services/notifications/.env
+    depends_on:
+      - rabbitmq
+
+  rabbitmq:
+    image: rabbitmq:4.1-management
+    ports:
+      - "5672:5672"  # RabbitMQ default port
+      - "15672:15672"  # RabbitMQ management UI
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${NOTIFICATION_MQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${NOTIFICATION_MQ_PASSWORD}
+
 # TODO: In prod, containerize app and services and only allow requests within the docker network
 volumes:
   auth-data:
   tasks-data:
+  rabbitmq-data:

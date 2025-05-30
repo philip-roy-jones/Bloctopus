@@ -1,0 +1,4 @@
+interface TaskCategoryLink {
+  taskId: string;
+  categoryId: string;
+}

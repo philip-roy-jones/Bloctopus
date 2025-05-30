@@ -1,43 +1,46 @@
 import { PrismaClient } from '@prisma/client';
 import { Task } from '../types/Task';
 import { verifyOwnership } from '@/helpers/verifyOwnership';
+import { linkCategoriesToTaskTx } from './taskCategoryService';
 
 const prisma = new PrismaClient();
 
 export const taskService = {
-  async create(userId: string, data: Task) {
-    console.log('Creating task with data:', data);
+  async create(userId: string, data: CreateTaskInput) {
+    return await prisma.$transaction(async (tx) => {
+      const { categoryIds = [], ...taskData } = data;
 
-    return await prisma.$transaction(async (prisma: PrismaClient) => {
-      const task = await prisma.task.create({
+      const task = await tx.task.create({
         data: {
           userId: parseInt(userId, 10),
-          ...data,
-          completed: false, // Override completed as false just in case, default is already false, but user can devtools it to true
+          ...taskData,
+          completed: false, // Force as false
         },
       });
 
-      if (data.categoryId) {
-        const categoryId = data.categoryId;
-
-        await verifyOwnership('category', userId, categoryId);
-
-        await prisma.taskCategory.create({
-          data: {
-            taskId: task.id,
-            categoryId,
-          },
-        });
+      if (categoryIds.length > 0) {
+        await linkCategoriesToTaskTx(tx, task.id, categoryIds);
       }
 
-      return task;
+      return tx.task.findUnique({
+        where: { id: task.id },
+        include: { categories: true },
+      });
     });
   },
 
   async show(userId: string, id: string) {
     await verifyOwnership('task', userId, id);
+
     return await prisma.task.findUnique({
-      where: { id },
+      where: { id: parseInt(id, 10) },
+      include: {
+        categories: {
+          include: {
+            category: true,
+          },
+        },
+      },
     });
   },
 
