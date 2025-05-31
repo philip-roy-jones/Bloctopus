@@ -20,7 +20,7 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "@philip-roy-jones/taskify-lib": "^1.0.0",
+    "@philip-roy-jones/taskify-lib": "^1.0.1",
     "amqplib": "^0.10.8"
   }
 }
