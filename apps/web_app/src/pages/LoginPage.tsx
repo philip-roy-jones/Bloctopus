@@ -21,11 +21,13 @@ const LoginPage: React.FC = () => {
   }, [location]);
 
   return (
-    <>
-      <h1>Login</h1>
-      <div>
-        <LoginForm email={email} password={password} setEmail={setEmail} setPassword={setPassword}/>
-      </div>
+    <div className="flex min-h-screen items-center justify-center bg-gray-100 p-4">
+      <LoginForm
+        email={email}
+        password={password}
+        setEmail={setEmail}
+        setPassword={setPassword}
+      />
       <p>
         <Link to="/forgot">Forgot Password?</Link>
       </p>
@@ -33,7 +35,7 @@ const LoginPage: React.FC = () => {
         Not Registered? <Link to="/register">Sign Up</Link>
       </p>
       <p>Helps you stay organized! Remind yourself in the future!</p>
-    </>
+    </div>
   );
 };
 
