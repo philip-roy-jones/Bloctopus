@@ -4,6 +4,7 @@ import { sendVerificationEmail } from '../helpers/sendVerificationEmail';
 import { sendPasswordResetEmail } from '../helpers/sendPasswordResetEmail';
 import jwt from 'jsonwebtoken';
 import { AUTH_SECRET, PASSWORD_RESET_SECRET, PASSWORD_RESET_DURATION, SESSION_EXPIRATION } from '../config/config';
+import { UnauthorizedError } from '../errors/UnauthorizedError';
 
 if (!AUTH_SECRET) {
   throw new Error('AUTH_SECRET is not defined in the environment variables');
@@ -167,12 +168,12 @@ export const authService = {
 
   loginUser: async (email: string, password: string) => {
     const user = await prisma.user.findUnique({ where: { email } });
-    if (!user) throw new Error('User not found');
+    if (!user) throw new UnauthorizedError('User not found');
 
     const isPasswordValid = await bcrypt.compare(password, user.hashedPassword);
-    if (!isPasswordValid) throw new Error('Invalid password');
+    if (!isPasswordValid) throw new UnauthorizedError('Invalid password');
 
-    if (!user.isVerified) throw new Error('Email not verified');
+    if (!user.isVerified) throw new UnauthorizedError('Email not verified');
 
     // Generate JWT Token
     const token = jwt.sign(

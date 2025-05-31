@@ -6,6 +6,7 @@ import React, {
   ReactNode,
 } from "react";
 import { User, AuthContextType } from "@/types/AuthContext";
+import { UnauthorizedError } from "@/errors/UnauthorizedError";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -45,6 +46,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
 
     if (!response.ok) {
+      if (response.status === 401) {
+        throw new UnauthorizedError("Invalid email or password");
+      }
       throw new Error("Login failed");
     }
 
