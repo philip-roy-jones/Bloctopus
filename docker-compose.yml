@@ -10,6 +10,17 @@ services:
       - tasks-service
     command: ["/wait-for-services.sh"]
 
+  rabbitmq:
+    image: rabbitmq:4.1-management
+    ports:
+      - "5672:5672"  # RabbitMQ default port
+      - "15672:15672"  # RabbitMQ management UI
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASSWORD}
+
   web-app:
     build:
       context: ./apps/web_app
@@ -86,19 +97,16 @@ services:
     depends_on:
       - rabbitmq
 
-  rabbitmq:
-    image: rabbitmq:4.1-management
+  notification-redis:
+    image: redis:7
     ports:
-      - "5672:5672"  # RabbitMQ default port
-      - "15672:15672"  # RabbitMQ management UI
+      - "6380:6379"  # Expose only for debugging if needed
     volumes:
-      - rabbitmq-data:/var/lib/rabbitmq
-    environment:
-      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
-      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASSWORD}
+      - redis-data:/data
 
 # TODO: In prod, containerize app and services and only allow requests within the docker network
 volumes:
   auth-data:
   tasks-data:
   rabbitmq-data:
+  redis-data:
