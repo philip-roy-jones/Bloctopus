@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Link } from "react-router-dom";
 
 interface LoginFormProps {
   email: string;
@@ -35,41 +36,14 @@ const LoginForm: React.FC<LoginFormProps> = ({
 
   return (
     <>
-      <form onSubmit={handleSubmit} noValidate={true}>
-        <div>
-          <label htmlFor="email">Email</label>
-          <input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
-            required
-          />
-        </div>
-
-        <div>
-          <label htmlFor="password">Password</label>
-          <input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            required
-          />
-        </div>
-
-        <button type="submit">Log In</button>
-      </form>
       <Card className="w-full max-w-sm shadow-lg">
         <CardHeader>
           <CardTitle className="text-center text-2xl font-bold">
-            Log in
+            Welcome Back!
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <form className="space-y-4">
+          <form className="space-y-4" onSubmit={handleSubmit} noValidate>
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -77,6 +51,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
                 type="email"
                 placeholder="you@example.com"
                 required
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
 
@@ -87,13 +62,24 @@ const LoginForm: React.FC<LoginFormProps> = ({
                 type="password"
                 placeholder="••••••••"
                 required
+                onChange={(e) => setPassword(e.target.value)}
               />
+                <Link to="/forgot" className="ml-auto block text-right text-blue-600 hover:underline text-sm">Forgot Password?</Link>
             </div>
 
-            <Button type="submit" className="w-full">
+            <Button
+              type="submit"
+              className="w-full bg-red-600 hover:bg-red-700"
+            >
               Log in
             </Button>
           </form>
+          <p className="mt-4 text-center text-sm">
+            Not Registered?{" "}
+            <Link to="/register" className="text-blue-600 hover:underline">
+              Sign Up
+            </Link>
+          </p>
         </CardContent>
       </Card>
     </>
