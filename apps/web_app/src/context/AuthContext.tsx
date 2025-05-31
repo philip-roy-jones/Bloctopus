@@ -23,10 +23,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (res.ok) {
         const data = await res.json();
         return data;
+      } else if (res.status === 401) {
+        return null;
       } else {
+        console.warn("Unexpected response:", res.status);
         return null;
       }
-    } catch {
+    } catch (err) {
+      console.error("Fetch failed:", err);
       return null;
     }
   };
@@ -54,7 +58,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       method: "POST",
       credentials: "include",
     });
-    
+
     setUser(null);
   };
 
