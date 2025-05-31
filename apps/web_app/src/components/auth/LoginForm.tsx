@@ -77,6 +77,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
                 placeholder="you@example.com"
                 required
                 onChange={(e) => setEmail(e.target.value)}
+                className={errors.email ? "border-red-500 focus-visible:ring-red-500" : ""}
               />
               {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
             </div>
@@ -89,6 +90,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
                 placeholder="••••••••"
                 required
                 onChange={(e) => setPassword(e.target.value)}
+                className={errors.password ? "border-red-500 focus-visible:ring-red-500" : ""}
               />
               {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
               <Link
