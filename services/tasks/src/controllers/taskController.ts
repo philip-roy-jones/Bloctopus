@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { taskService } from '../services/taskService';
 import { Task } from '../types/Task';
 import { getUserId } from '@/helpers/getUserId';
+import { publishReminder } from '@/events/publishReminder';
 
 // TODO: Sanitize and validate input data properly (skipping for now for simplicity)
 
@@ -105,4 +106,14 @@ export const destroy = async (req: Request, res: Response, next: NextFunction): 
   } catch (error) {
     next(error);
   }
+};
+
+export const test = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  publishReminder({
+    taskId: 'test-task-id',
+    userId: 'test-user-id',
+    title: 'Test Task',
+    remindAt: new Date().toISOString()
+  });
+  res.status(200).json({ message: 'Test reminder published' });
 };
