@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-      "dev": "docker compose up --build",
-      "start": "docker compose -f docker-compose.yml up --build"
+    "dev": "docker compose up --build",
+    "start": "docker compose -f docker-compose.yml up --build"
   },
   "repository": {
     "type": "git",
