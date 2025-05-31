@@ -94,8 +94,8 @@ services:
     volumes:
       - rabbitmq-data:/var/lib/rabbitmq
     environment:
-      RABBITMQ_DEFAULT_USER: ${NOTIFICATION_MQ_USER}
-      RABBITMQ_DEFAULT_PASS: ${NOTIFICATION_MQ_PASSWORD}
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASSWORD}
 
 # TODO: In prod, containerize app and services and only allow requests within the docker network
 volumes:
