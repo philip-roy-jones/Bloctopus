@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input";
@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router-dom";
+import { UnauthorizedError } from "@/errors/UnauthorizedError";
 
 interface LoginFormProps {
   email: string;
@@ -24,13 +25,37 @@ const LoginForm: React.FC<LoginFormProps> = ({
 
   const navigate = useNavigate();
 
+  const [errors, setErrors] = useState<{ email?: string; password?: string; all?: string; }>(
+    {}
+  );
+
+  const validate = () => {
+    const newErrors: { email?: string; password?: string } = {};
+
+    if (!email) newErrors.email = "Email is required";
+    if (!password) newErrors.password = "Password is required";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    if (!validate()) return;
+
     try {
       await login({ email, password });
       navigate("/");
     } catch (error) {
-      console.error("Login failed:", error);
+      if (error instanceof UnauthorizedError) {
+        setErrors({
+          email: error.message,
+          password: error.message
+        })
+      } else {
+        setErrors({"all":"An error occured. Please try again later."});
+        console.error("Login failed:", error);
+      }
     }
   };
 
@@ -53,6 +78,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
                 required
                 onChange={(e) => setEmail(e.target.value)}
               />
+              {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
             </div>
 
             <div className="space-y-2">
@@ -64,8 +90,16 @@ const LoginForm: React.FC<LoginFormProps> = ({
                 required
                 onChange={(e) => setPassword(e.target.value)}
               />
-                <Link to="/forgot" className="ml-auto block text-right text-blue-600 hover:underline text-sm">Forgot Password?</Link>
+              {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
+              <Link
+                to="/forgot"
+                className="ml-auto block text-right text-blue-600 hover:underline text-sm"
+              >
+                Forgot Password?
+              </Link>
             </div>
+
+            {errors.all && <p className="text-red-500 text-sm text-center">{errors.all}</p>}
 
             <Button
               type="submit"
