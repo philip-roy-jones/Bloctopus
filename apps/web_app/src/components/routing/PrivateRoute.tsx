@@ -1,6 +1,7 @@
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { ReactNode } from 'react';
+import AuthenticatedLayout from '../layout/AuthenticatedLayout';
 
 interface PrivateRouteProps {
   children: ReactNode;
@@ -20,5 +21,5 @@ export default function PrivateRoute({ children, allowedRoles }: PrivateRoutePro
     content = <Navigate to="/unauthorized" />;
   }
 
-  return <>{content}</>;
+  return <AuthenticatedLayout>{content}</AuthenticatedLayout>;
 }
