@@ -50,6 +50,11 @@ const SidebarLayout: React.FC<{ logout: () => void }> = ({ logout }) => {
                 <Link to="/tasks">Tasks</Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton asChild>
+                <Link to="/planner">Planner</Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
           </SidebarMenu>
         </SidebarContent>
 

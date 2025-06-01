@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { Task } from "@/types/Task";
 import { createTask } from "@/services/taskService";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 
-interface NewTaskProps {
-  onTaskCreated: (task: Task) => void;
-}
-
-const NewTask: React.FC<NewTaskProps> = ({ onTaskCreated }) => {
+const NewTask: React.FC = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
@@ -17,7 +17,7 @@ const NewTask: React.FC<NewTaskProps> = ({ onTaskCreated }) => {
         title,
         description,
       });
-      onTaskCreated(createdTask);
+      // onTaskCreated(createdTask);
       setTitle("");
       setDescription("");
       (event.target as HTMLFormElement).reset();
@@ -27,26 +27,29 @@ const NewTask: React.FC<NewTaskProps> = ({ onTaskCreated }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label htmlFor="title">Title</label>
-        <input
-          type="text"
+    <form onSubmit={handleSubmit} className="space-y-6 max-w-xl w-full">
+      <div className="space-y-2">
+        <Label htmlFor="title">Title</Label>
+        <Input
           id="title"
-          name="title"
+          placeholder="Enter task title"
           onChange={(e) => setTitle(e.target.value)}
           required
         />
       </div>
-      <div>
-        <label htmlFor="description">Description</label>
-        <textarea
+
+      <div className="space-y-2">
+        <Label htmlFor="description">Description</Label>
+        <Textarea
           id="description"
-          name="description"
+          placeholder="Optional task description"
           onChange={(e) => setDescription(e.target.value)}
-        ></textarea>
+        />
       </div>
-      <button type="submit">Create Task</button>
+
+      <Button type="submit" className="w-full">
+        Create Task
+      </Button>
     </form>
   );
 };

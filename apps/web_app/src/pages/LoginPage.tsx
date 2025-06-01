@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import LoginForm from "@/components/auth/LoginForm";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useBanner } from "@/context/BannerContext";
-import taskifyIcon from "@/assets/images/taskify-icon.svg";
+import LogoHeader from "@/components/layout/LogoHeader";
 
 const LoginPage: React.FC = () => {
   const { setBanner } = useBanner();
@@ -24,10 +24,7 @@ const LoginPage: React.FC = () => {
   return (
     <>
       <div className="flex flex-col min-h-screen items-center justify-center bg-gray-100 p-4">
-        <div className="w-full flex items-center justify-center mb-4">
-          <img src={taskifyIcon} alt="Taskify Icon" className="h-10" />
-          <p className="text-4xl font-bold ml-2">Taskify</p>
-        </div>
+        <LogoHeader />
         <LoginForm
           email={email}
           password={password}
