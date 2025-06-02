@@ -10,10 +10,16 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Link } from "react-router-dom";
-import NewTaskDialog from "../tasks/NewTaskDialog";
+import React, { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+} from "@/components/ui/dialog";
+import NewTask from "../tasks/NewTask";
 
 const SidebarLayout: React.FC<{ logout: () => void }> = ({ logout }) => {
   const { state } = useSidebar();
+  const [isDialogOpen, setDialogOpen] = useState(false);
 
   return (
     <div className="flex min-h-screen">
@@ -41,9 +47,14 @@ const SidebarLayout: React.FC<{ logout: () => void }> = ({ logout }) => {
         <SidebarContent>
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton>
-                <NewTaskDialog />
+              <SidebarMenuButton onClick={() => setDialogOpen(true)}>
+                Add a Task
               </SidebarMenuButton>
+              <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
+                <DialogContent>
+                  <NewTask />
+                </DialogContent>
+              </Dialog>
             </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton asChild>

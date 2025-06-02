@@ -1,7 +1,6 @@
 import RegisterForm from "@/components/auth/RegisterForm";
 import LogoHeader from "@/components/layout/LogoHeader";
 import React from "react";
-import { Link } from "react-router-dom";
 
 const RegisterPage: React.FC = () => {
   return (

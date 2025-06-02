@@ -1,3 +1,5 @@
+import { MultiValidationError } from "@/errors/validations";
+
 export async function registerUser({
   email,
   password,
@@ -19,9 +21,12 @@ export async function registerUser({
       body: JSON.stringify({ email, password, confirmPassword, acceptedTerms }),
     });
 
-    if (!response.ok) {
+    if (response.status === 400) {
       const errorData = await response.json();
-      throw new Error(errorData.error || "Registration failed");
+      throw new MultiValidationError(errorData);
+    } else if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Registration failed");
     }
   } catch (error) {
     console.error("Registration request failed:", error);

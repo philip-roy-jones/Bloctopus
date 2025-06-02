@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Link } from "react-router-dom";
 import { Checkbox } from "@/components/ui/checkbox";
 import TermsAndConditions from "@/components/dialogs/TermsAndConditions";
+import { MultiValidationError } from "@/errors/validations";
 
 const RegisterForm: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -30,11 +31,18 @@ const RegisterForm: React.FC = () => {
     try {
       await registerUser({ email, password, confirmPassword, acceptedTerms });
       navigate(`/register/confirm?email=${encodeURIComponent(email)}`);
-    } catch (error) {
-      if (error instanceof Error) {
-        alert(error.message || "Registration failed. Please try again.");
-      } else {
-        alert("Registration failed. Please try again.");
+    } catch (error: any) {
+      if (error instanceof MultiValidationError) {
+        // Handle validation errors
+        const validationErrors: { [key: string]: string } = {};
+        error.errors.forEach((err) => {
+          if (err.field) {
+            validationErrors[err.field] = err.message;
+          } else {
+            validationErrors.all = err.message;
+          }
+        });
+        setErrors(validationErrors);
       }
     }
   };
@@ -107,16 +115,21 @@ const RegisterForm: React.FC = () => {
             </div>
 
             <div className="space-y-2">
-                <div className="flex items-center justify-center space-x-2">
+              <div className="flex items-center justify-center space-x-2">
                 <Checkbox
                   id="terms"
                   checked={acceptedTerms}
                   onCheckedChange={(checked) => setAcceptedTerms(!!checked)}
                   required
+                  className={
+                    errors.acceptedTerms
+                      ? "border-red-500 focus-visible:ring-red-500"
+                      : ""
+                  }
                 />
                 <Label
                   htmlFor="terms"
-                  className="text-sm text-gray-700 leadingj-snug mr-1"
+                  className="text-sm text-gray-700 leading-snug mr-1"
                 >
                   I agree to the
                 </Label>
