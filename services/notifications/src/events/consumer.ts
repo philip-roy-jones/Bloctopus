@@ -22,7 +22,6 @@ export async function startReminderConsumer() {
     try {
       const { type, data } = JSON.parse(msg.content.toString());
 
-
       switch (type) {
         case "create":
           await handleCreateReminder(data);

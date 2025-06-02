@@ -11,6 +11,8 @@ export async function handleUpdateReminder(data: CreateReminderData) {
   // Schedule new job
   await reminderQueue.add(jobId, data, {
     jobId,
-    timestamp: new Date(data.remindAt).getTime()
+    delay: new Date(data.remindAt).getTime() - Date.now(),
+    removeOnComplete: true,
+    removeOnFail: true,
   })
 }
