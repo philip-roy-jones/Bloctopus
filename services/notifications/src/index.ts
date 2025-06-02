@@ -1,3 +1,9 @@
 import { startReminderConsumer } from './events/consumer';
+import { startReminderWorker } from './workers/sendReminderWorker';
 
-startReminderConsumer();
+async function main() {
+  await startReminderConsumer();
+  await startReminderWorker();
+}
+
+main();
