@@ -3,6 +3,7 @@ import { authService } from '../services/authService';
 import { AuthRequest } from '../@types/express';
 import { PASSWORD_RESET_DURATION, SESSION_EXPIRATION } from '../config/config';
 import { UnauthorizedError } from '../errors/UnauthorizedError';
+import { MultiValidationError } from '../errors/MultiValidationError';
 
 export const validate: RequestHandler = async (req: AuthRequest, res): Promise<void> => {
   try {
@@ -26,11 +27,14 @@ export const validate: RequestHandler = async (req: AuthRequest, res): Promise<v
 
 export const register: RequestHandler = async (req, res) => {
   try {
-    console.log("route hit");
-    await authService.registerUser(req.body.email, req.body.password, req.body.acceptedTerms);
+    await authService.registerUser(req.body.email, req.body.password, req.body.confirmPassword, req.body.acceptedTerms);
     res.status(201).json({ message: 'User registered successfully. Please check your email for verification.' });
   } catch (error: any) {
-    res.status(400).json({ error: error.message || 'Registration failed' });
+    if (error instanceof MultiValidationError) {
+      res.status(400).json(error.errors);
+      return;
+    }
+    res.status(500).json({ message: error.message || 'Registration failed' });
   }
 };
 

@@ -5,6 +5,8 @@ import { sendPasswordResetEmail } from '../helpers/sendPasswordResetEmail';
 import jwt from 'jsonwebtoken';
 import { AUTH_SECRET, PASSWORD_RESET_SECRET, PASSWORD_RESET_DURATION, SESSION_EXPIRATION } from '../config/config';
 import { UnauthorizedError } from '../errors/UnauthorizedError';
+import { validatePasswordReset, validateRegistration } from '../helpers/authUtils';
+import { MultiValidationError } from '../errors/MultiValidationError';
 
 if (!AUTH_SECRET) {
   throw new Error('AUTH_SECRET is not defined in the environment variables');
@@ -16,14 +18,15 @@ if (!PASSWORD_RESET_SECRET) {
 const prisma = new PrismaClient();
 
 export const authService = {
-  registerUser: async (email: string, password: string, acceptedTerms: boolean) => {
-    if (!email || !password) throw new Error('Email and password are required');
-    if (!acceptedTerms) throw new Error('You must accept the terms and conditions');
+  registerUser: async (email: string, password: string, confirmPassword: string, acceptedTerms: boolean) => {
+    const errors = validateRegistration(email, password, confirmPassword, acceptedTerms);
 
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
-      throw new Error('User is already registered with this email');
+      errors.push({ field: "email", message: "User is already registered with this email" });
     }
+
+    if (errors.length) throw new MultiValidationError(errors);
 
     const saltRounds = 12;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
@@ -151,10 +154,11 @@ export const authService = {
     return jwtToken;
   },
 
-  resetPassword: async (newPassword: string, confirmNewPassword: string, token: string, ) => {
-    if (!newPassword) throw new Error('New password are required');
-    if (!confirmNewPassword) throw new Error('Confirm new password is required');
-    if (!token) throw new Error('Token is required');
+  resetPassword: async (newPassword: string, confirmNewPassword: string, token: string,) => {
+    const errors = validatePasswordReset(newPassword, confirmNewPassword, token);
+
+    if (errors.length) throw new MultiValidationError(errors);
+
     const decoded = jwt.verify(token, PASSWORD_RESET_SECRET as string) as unknown as { userId: string; };
 
     const saltRounds = 12;
