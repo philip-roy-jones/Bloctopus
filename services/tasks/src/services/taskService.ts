@@ -1,13 +1,14 @@
-import { PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 import { Task } from '../types/Task';
 import { verifyOwnership } from '@/helpers/verifyOwnership';
 import { linkCategoriesToTaskTx } from './taskCategoryService';
+import { CreateTaskInput } from '../types/Task';
 
 const prisma = new PrismaClient();
 
 export const taskService = {
   async create(userId: string, data: CreateTaskInput) {
-    return await prisma.$transaction(async (tx) => {
+    return await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       const { categoryIds = [], ...taskData } = data;
 
       const task = await tx.task.create({
@@ -19,7 +20,7 @@ export const taskService = {
       });
 
       if (categoryIds.length > 0) {
-        await linkCategoriesToTaskTx(tx, task.id, categoryIds);
+        await linkCategoriesToTaskTx(tx, { taskId: task.id, categoryIds: categoryIds.map(id => parseInt(id, 10)) });
       }
 
       return tx.task.findUnique({
