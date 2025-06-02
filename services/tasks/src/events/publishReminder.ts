@@ -1,12 +1,8 @@
 import { createRabbitChannel } from '@philip-roy-jones/taskify-lib';
 import { RABBITMQ_DEFAULT_USER, RABBITMQ_DEFAULT_PASSWORD, RABBITMQ_HOST, RABBITMQ_PORT } from '@/config/config';
+import { ReminderInput } from '@/types/Reminder';
 
-export async function publishReminder(task: {
-  taskId: string;
-  userId: string;
-  title: string;
-  remindAt: string;
-}) {
+export async function publishReminder(reminder: ReminderInput) {
   const { channel, connection } = await createRabbitChannel(
     RABBITMQ_HOST,
     RABBITMQ_PORT,
@@ -14,13 +10,12 @@ export async function publishReminder(task: {
     RABBITMQ_DEFAULT_PASSWORD
   );
 
-  const queue = 'task_reminder_scheduled';
+  const queue = 'task_reminder_events';
   await channel.assertQueue(queue, { durable: true });
 
-  channel.sendToQueue(queue, Buffer.from(JSON.stringify(task)), {
+  channel.sendToQueue(queue, Buffer.from(JSON.stringify(reminder)), {
     persistent: true,
   });
 
-  console.log('📤 Published TASK_REMINDER_SCHEDULED:', task);
   setTimeout(() => connection.close(), 500);
 }

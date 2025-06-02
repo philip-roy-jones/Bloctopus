@@ -13,9 +13,9 @@ export interface Task {
 export interface CreateTaskInput {
   title: string;
   description?: string;
-  scheduledDate?: Date;
-  startTime?: Date;
-  endTime?: Date;
+  scheduledDate?: string;
+  startTime?: string;
+  endTime?: string;
   categoryIds?: string[];
 }
 

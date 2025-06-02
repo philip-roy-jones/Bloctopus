@@ -2,6 +2,8 @@ import { Prisma, PrismaClient } from '@prisma/client';
 import { UpdateTaskInput, CreateTaskInput } from '../types/Task';
 import { verifyOwnership } from '@/helpers/verifyOwnership';
 import { linkCategoriesToTaskTx } from './taskCategoryService';
+import { publishReminder } from '@/events/publishReminder';
+import { ReminderInput } from '@/types/Reminder';
 
 const prisma = new PrismaClient();
 
@@ -20,6 +22,23 @@ export const taskService = {
 
       if (categoryIds.length > 0) {
         await linkCategoriesToTaskTx(tx, { taskId: task.id, categoryIds: categoryIds.map(id => parseInt(id, 10)) });
+      }
+
+      if (taskData.startTime && taskData.endTime) {
+        const reminder: ReminderInput = {
+          type: 'create',
+          data: {
+            taskId: task.id.toString(),
+            userId: userId,
+            title: taskData.title,
+            startTime: new Date(taskData.startTime),
+            endTime: new Date(taskData.endTime),
+            remindAt: new Date(new Date(taskData.startTime).getTime() - 600_000) // Remind 10 minutes before startTime
+          }
+        }
+
+        // Add message to rabbitmq
+        await publishReminder(reminder);
       }
 
       return tx.task.findUnique({
