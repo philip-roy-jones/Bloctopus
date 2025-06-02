@@ -11,11 +11,9 @@ import {
 } from "@/components/ui/sidebar";
 import { Link } from "react-router-dom";
 import React, { useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import NewTask from "../tasks/NewTask";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 const SidebarLayout: React.FC<{ logout: () => void }> = ({ logout }) => {
   const { state } = useSidebar();
@@ -51,6 +49,10 @@ const SidebarLayout: React.FC<{ logout: () => void }> = ({ logout }) => {
                 Add a Task
               </SidebarMenuButton>
               <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
+                <VisuallyHidden>
+                  <DialogTitle></DialogTitle>
+                  <DialogDescription></DialogDescription>
+                </VisuallyHidden>
                 <DialogContent>
                   <NewTask />
                 </DialogContent>

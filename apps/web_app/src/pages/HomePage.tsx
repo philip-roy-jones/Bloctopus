@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getTasks } from "@/services/taskService";
 import { Task } from "@/types/Task";
-import TaskItem from "@/components/tasks/TaskItem";
 import { CalendarDay } from "@/components/tasks/CalendarDay";
 import TaskList from "@/components/tasks/TaskList";
 
