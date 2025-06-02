@@ -1,8 +1,7 @@
 import { Prisma, PrismaClient } from '@prisma/client';
-import { Task } from '../types/Task';
+import { UpdateTaskInput, CreateTaskInput } from '../types/Task';
 import { verifyOwnership } from '@/helpers/verifyOwnership';
 import { linkCategoriesToTaskTx } from './taskCategoryService';
-import { CreateTaskInput } from '../types/Task';
 
 const prisma = new PrismaClient();
 
@@ -55,7 +54,7 @@ export const taskService = {
     });
   },
 
-  async update(userId: string, id: string, data: Task) {
+  async update(userId: string, id: string, data: UpdateTaskInput) {
     await verifyOwnership('task', userId, id);
 
     return await prisma.task.update({

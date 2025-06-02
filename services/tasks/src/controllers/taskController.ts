@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { taskService } from '../services/taskService';
-import { Task } from '../types/Task';
+import { CreateTaskInput, UpdateTaskInput } from '../types/Task';
 import { getUserId } from '@/helpers/getUserId';
 import { publishReminder } from '@/events/publishReminder';
 
@@ -47,7 +47,7 @@ export const create = async (req: Request, res: Response, next: NextFunction): P
     const userId = getUserId(req, res);
     if (!userId) return;
 
-    const taskData: Task = req.body; // Use Task type for taskData
+    const taskData: CreateTaskInput = req.body; // Use Task type for taskData
 
     if (!taskData || !taskData.title) {
       res.status(400).json({ message: 'Task data is required' });
@@ -73,7 +73,7 @@ export const update = async (req: Request, res: Response, next: NextFunction): P
       return;
     }
 
-    const taskData: Task = req.body;
+    const taskData: UpdateTaskInput = req.body;
 
     if (!taskData) {
       res.status(400).json({ message: 'Task data is required' });
