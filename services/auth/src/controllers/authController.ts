@@ -13,6 +13,16 @@ export const validate: RequestHandler = async (req: AuthRequest, res): Promise<v
     }
 
     if (req.user) {
+      try {
+        await authService.validate(req.user.userId);
+      } catch (error: any) {
+        if (error instanceof UnauthorizedError) {
+          res.status(401).json({ error: error.message || 'Unauthorized' });
+          return;
+        }
+        throw error;
+      }
+
       res.setHeader('X-User-ID', req.user.userId);
     } else {
       res.status(400).json({ error: 'User information is missing' });

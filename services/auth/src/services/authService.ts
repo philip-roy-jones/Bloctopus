@@ -7,6 +7,7 @@ import { AUTH_SECRET, PASSWORD_RESET_SECRET, PASSWORD_RESET_DURATION, SESSION_EX
 import { UnauthorizedError } from '../errors/UnauthorizedError';
 import { validatePasswordReset, validateRegistration } from '../helpers/authUtils';
 import { MultiValidationError } from '../errors/MultiValidationError';
+import { validate } from '../controllers/authController';
 
 if (!AUTH_SECRET) {
   throw new Error('AUTH_SECRET is not defined in the environment variables');
@@ -18,6 +19,30 @@ if (!PASSWORD_RESET_SECRET) {
 const prisma = new PrismaClient();
 
 export const authService = {
+  validate: async (userId: string) => {
+    try {
+      const user = await prisma.user.findUnique({ where: { id: Number(userId) } });
+      if (!user) throw new UnauthorizedError('User not found');
+
+      if (!user.isVerified) throw new UnauthorizedError('Email not verified');
+
+      // Optionally, you can return user details or just a success message
+      return {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+        displayName: user.displayName,
+      };
+    } catch (error) {
+      if (error instanceof UnauthorizedError) {
+        console.error('Unauthorized access attempt rethrowing...');
+        throw error; // Re-throw UnauthorizedError to be handled by the controller
+      }
+      console.error('Error validating user:', error);
+      throw new Error('Internal server error during validation');
+    }
+  },
+
   registerUser: async (email: string, password: string, confirmPassword: string, acceptedTerms: boolean) => {
     const errors = validateRegistration(email, password, confirmPassword, acceptedTerms);
 
