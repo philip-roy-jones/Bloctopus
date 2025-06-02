@@ -55,6 +55,7 @@ services:
       MYSQL_PORT: 3306
     volumes:
       - auth-data:/var/lib/mysql
+      - ./database-inits/auth.sql:/docker-entrypoint-initdb.d/init.sql
     env_file:
       - .env
 
@@ -82,6 +83,7 @@ services:
       MYSQL_PORT: 3306
     volumes:
       - tasks-data:/var/lib/mysql
+      - ./database-inits/tasks.sql:/docker-entrypoint-initdb.d/init.sql
     env_file:
       - .env
 
