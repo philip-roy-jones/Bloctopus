@@ -50,7 +50,6 @@ export const createTask = async (task: CreateTask) => {
 
 export const updateTask = async (taskId: string, task: UpdateTask) => {
   try {
-    console.log("Updating task with ID:", taskId, "and data:", task);
     const response = await fetch(`/api/tasks/${taskId}`, {
       method: "PATCH",
       headers: {
@@ -88,7 +87,6 @@ export const deleteTask = async (taskId: string) => {
       throw new Error(errorData.error || "Failed to delete task");
     }
 
-    console.log("Task deleted successfully");
   } catch (error) {
     console.error("Delete task request failed:", error);
     throw error;

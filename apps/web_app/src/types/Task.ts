@@ -6,7 +6,7 @@ export interface CreateTask {
 
 // Interface for updating a task
 export interface UpdateTask {
-  title: string;
+  title?: string;
   description?: string;
   completed?: boolean;
 }
