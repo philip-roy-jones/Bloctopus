@@ -12,7 +12,13 @@ export const TaskList: React.FC<TaskListProps> = ({ tasks }) => {
       <div className="container flex flex-col gap-4">
         {tasks && tasks.length > 0 ? (
           tasks.map((task) => (
-            <TaskItem key={task.id} task={task} />
+            <TaskItem 
+              key={task.id} 
+              task={task} 
+              onToggle={() => console.log(`Toggled task ${task.id}`)} 
+              onDelete={() => console.log(`Deleted task ${task.id}`)} 
+              onUpdate={(updatedTask) => console.log(`Updated task ${task.id}`, updatedTask)} 
+            />
           ))
         ) : (
           <div className="text-center text-gray-500">No tasks available</div>

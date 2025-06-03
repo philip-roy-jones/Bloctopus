@@ -1,41 +1,45 @@
-import React, { useEffect, useState } from "react";
-import { getTasks } from "@/services/taskService";
-import { Task } from "@/types/Task";
-import { CalendarDay } from "@/components/tasks/CalendarDay";
-import TaskList from "@/components/tasks/TaskList";
+import React, { useState } from "react";
+import { useAppContext } from "@/context/AppContext";
+import NewTask from "@/components/tasks/NewTask";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
+import TaskListItem from "@/components/tasks/TaskListItem";
+import { Card, CardContent } from "@/components/ui/card";
 
 const HomePage: React.FC = () => {
-  const [tasks, setTasks] = useState<Task[]>([]);
-
-  const addTask = (newTask: Task) => {
-    setTasks((prevTasks) => [...prevTasks, newTask]);
-  };
-
-  const changeTask = (updatedTask: Task) => {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) => (task.id === updatedTask.id ? updatedTask : task))
-    );
-  };
-
-  const removeTask = (taskId: string) => {
-    setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
-  };
-
-  useEffect(() => {
-    const fetchTasks = async () => {
-      const data = await getTasks();
-      setTasks(data);
-    };
-    fetchTasks();
-  }, []);
+  const { tasks } = useAppContext();
+  const [newTaskUi, setNewTaskUi] = useState<boolean>(false);
 
   return (
-    <div className="grid grid-cols-12 gap-6">
-      <div className="col-span-2">
-        <TaskList tasks={tasks} />
-      </div>
-      <div className="col-span-10">
-        <CalendarDay />
+    <div className="max-w-xl mx-auto p-6 pt-3">
+      <h1 className="text-2xl font-bold mb-4">Tasks</h1>
+      <p className="text-sm text-muted-foreground mb-4">{tasks.length} tasks</p>
+
+      <div className="space-y-3">
+        {tasks.map((task) => (
+          <TaskListItem key={task.id} task={task} />
+        ))}
+
+        {newTaskUi && (
+          <Card>
+            <CardContent>
+              <NewTask onClose={() => setNewTaskUi(false)} />
+            </CardContent>
+          </Card>
+        )}
+
+        {!newTaskUi && (
+          <div className="flex items-center gap-2 pb-2">
+            <Button
+              variant="outline"
+              className="w-full justify-start"
+              onClick={() => setNewTaskUi(!newTaskUi)}
+            >
+              <Plus className="w-4 h-4 text-muted-foreground" />
+              Add a Task
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

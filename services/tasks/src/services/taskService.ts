@@ -63,13 +63,10 @@ export const taskService = {
     });
   },
 
-  async index(userId: string, page: number = 1, pageSize: number = 10) {
-    const skip = (page - 1) * pageSize;
-
+  async index(userId: string) {
     return await prisma.task.findMany({
       where: { userId: parseInt(userId, 10) },
-      skip,
-      take: pageSize,
+      include: { categories: true },
     });
   },
 

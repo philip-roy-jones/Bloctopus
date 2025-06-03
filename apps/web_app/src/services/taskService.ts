@@ -50,6 +50,7 @@ export const createTask = async (task: CreateTask) => {
 
 export const updateTask = async (taskId: string, task: UpdateTask) => {
   try {
+    console.log("Updating task with ID:", taskId, "and data:", task);
     const response = await fetch(`/api/tasks/${taskId}`, {
       method: "PATCH",
       headers: {

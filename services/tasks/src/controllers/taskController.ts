@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from 'express';
 import { taskService } from '../services/taskService';
 import { CreateTaskInput, UpdateTaskInput } from '../types/Task';
 import { getUserId } from '@/helpers/getUserId';
-import { publishReminder } from '@/events/publishReminder';
 
 // TODO: Sanitize and validate input data properly (skipping for now for simplicity)
 
@@ -12,9 +11,7 @@ export const index = async (req: Request, res: Response, next: NextFunction): Pr
     if (!userId) return;
 
     const tasks = await taskService.index(
-      userId,
-      parseInt(req.query.page as string, 10) || 1,
-      parseInt(req.query.pageSize as string, 10) || 10
+      userId
     );
 
     res.status(200).json(tasks);
@@ -74,6 +71,7 @@ export const update = async (req: Request, res: Response, next: NextFunction): P
     }
 
     const taskData: UpdateTaskInput = req.body;
+    console.log('Task data:', taskData);
 
     if (!taskData) {
       res.status(400).json({ message: 'Task data is required' });

@@ -5,10 +5,22 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { useAppContext } from "@/context/AppContext";
 
-const NewTask: React.FC = () => {
+const NewTask: React.FC<{ onClose: () => void; closeOnCreate?: boolean }> = ({
+  onClose,
+  closeOnCreate = false,
+}) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const { setTasks } = useAppContext();
+
+  const onTaskCreated = (task: Task) => {
+    setTasks((prevTasks: Task[]) => [...prevTasks, task]);
+    if (closeOnCreate) {
+      onClose();
+    }
+  };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -17,7 +29,7 @@ const NewTask: React.FC = () => {
         title,
         description,
       });
-      // onTaskCreated(createdTask);
+      onTaskCreated(createdTask);
       setTitle("");
       setDescription("");
       (event.target as HTMLFormElement).reset();
@@ -27,7 +39,11 @@ const NewTask: React.FC = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 max-w-xl w-full">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-6 max-w-xl w-full"
+      noValidate
+    >
       <div className="space-y-2">
         <Label htmlFor="title">Title</Label>
         <Input
@@ -47,9 +63,15 @@ const NewTask: React.FC = () => {
         />
       </div>
 
-      <Button type="submit" className="w-full">
-        Create Task
-      </Button>
+      <div className="flex justify-end">
+        <Button className="w-25 mr-4" variant={"outline"} onClick={onClose}>
+          <span className="text-sm">Cancel</span>
+        </Button>
+
+        <Button type="submit" className="w-25">
+          Create Task
+        </Button>
+      </div>
     </form>
   );
 };

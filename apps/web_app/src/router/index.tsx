@@ -10,6 +10,7 @@ import Banner from "@/components/ui/Banner";
 import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
 import ForgotPasswordConfirmPage from "@/pages/ForgotPasswordConfirmPage";
 import PublicRoute from "@/components/routing/PublicRoute";
+import PlannerPage from "@/pages/PlannerPage";
 
 const AppRouter = () => {
   return (
@@ -67,6 +68,14 @@ const AppRouter = () => {
               <PublicRoute>
                 <NotFoundPage />
               </PublicRoute>
+            }
+          />
+          <Route
+            path="/planner"
+            element={
+              <PrivateRoute>
+                <PlannerPage />
+              </PrivateRoute>
             }
           />
         </Routes>

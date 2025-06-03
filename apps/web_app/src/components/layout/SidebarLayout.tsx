@@ -14,9 +14,11 @@ import React, { useState } from "react";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import NewTask from "../tasks/NewTask";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { useAuth } from "@/context/AuthContext";
 
-const SidebarLayout: React.FC<{ logout: () => void }> = ({ logout }) => {
+const SidebarLayout: React.FC = () => {
   const { state } = useSidebar();
+  const { logout } = useAuth();
   const [isDialogOpen, setDialogOpen] = useState(false);
 
   return (
@@ -29,17 +31,17 @@ const SidebarLayout: React.FC<{ logout: () => void }> = ({ logout }) => {
 
       <Sidebar collapsible="offcanvas">
         <SidebarHeader>
-          <div className="flex items-center justify-between w-full pr-2">
+            <Link to="/" className="flex items-center justify-between w-full pr-2">
             <div className="flex items-center gap-2">
               <img
-                src="/src/assets/images/taskify-icon.svg"
-                alt="Taskify"
-                className="h-8 w-8"
+              src="/src/assets/images/taskify-icon.svg"
+              alt="Taskify"
+              className="h-8 w-8"
               />
               <h1 className="text-lg font-bold">Taskify</h1>
             </div>
             {state === "expanded" && <SidebarTrigger />}
-          </div>
+            </Link>
         </SidebarHeader>
 
         <SidebarContent>
@@ -54,14 +56,9 @@ const SidebarLayout: React.FC<{ logout: () => void }> = ({ logout }) => {
                   <DialogDescription></DialogDescription>
                 </VisuallyHidden>
                 <DialogContent>
-                  <NewTask />
+                  <NewTask onClose={() => setDialogOpen(false)} closeOnCreate={true}/>
                 </DialogContent>
               </Dialog>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton asChild>
-                <Link to="/tasks">Tasks</Link>
-              </SidebarMenuButton>
             </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton asChild>
