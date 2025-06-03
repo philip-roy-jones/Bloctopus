@@ -43,6 +43,13 @@ export const authService = {
     }
   },
 
+  getUserEmail: async (userId: string) => {
+    if (!userId) throw new Error('User ID is required');
+    const user = await prisma.user.findUnique({ where: { id: Number(userId) } });
+    if (!user) throw new Error('User not found');
+    return { email: user.email };
+  },
+
   registerUser: async (email: string, password: string, confirmPassword: string, acceptedTerms: boolean) => {
     const errors = validateRegistration(email, password, confirmPassword, acceptedTerms);
 

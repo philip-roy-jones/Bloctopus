@@ -4,8 +4,9 @@ import jwt from "jsonwebtoken";
 import { AUTH_SECRET } from "../config/config";
 
 export const authenticate = (req: AuthRequest, res: Response, next: NextFunction): void => {
-  const token = req.cookies.sessionCookie;
+  const token = req.cookies.sessionCookie || req.headers["x-auth-token"];
 
+  // TODO: Tech debt: we should no longer make internal calls to validate endpoint. gateway should verify jwt
   if (!token) {
     res.status(401).json({ message: "Unauthorized: No token provided" });
     return;

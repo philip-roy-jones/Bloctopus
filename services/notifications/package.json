@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@philip-roy-jones/taskify-lib": "^1.0.1",
+    "@sendgrid/mail": "^8.1.5",
     "amqplib": "^0.10.8",
     "bullmq": "^5.53.1"
   }
