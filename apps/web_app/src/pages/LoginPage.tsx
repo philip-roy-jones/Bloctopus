@@ -1,25 +1,12 @@
 import React, { useEffect, useState } from "react";
 import LoginForm from "@/components/auth/LoginForm";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useBanner } from "@/context/BannerContext";
 import LogoHeader from "@/components/layout/LogoHeader";
 
 const LoginPage: React.FC = () => {
-  const { setBanner } = useBanner();
-  const location = useLocation();
-  const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  useEffect(() => {
-    if (location.state && location.state.message) {
-      setBanner(location.state.message, "info");
-      // Clear the message in the history state
-      const newState = { ...location.state, message: null };
-      navigate(location.pathname, { replace: true, state: newState });
-    }
-  }, [location]);
 
   return (
     <>

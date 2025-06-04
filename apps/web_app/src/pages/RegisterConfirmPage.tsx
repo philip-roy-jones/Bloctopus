@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import RegisterConfirmForm from "@/components/auth/RegisterConfirmForm";
 import { confirmRegistration } from "@/services/authService";
+import { toast } from "sonner";
 
 const RegisterConfirmPage: React.FC = () => {
   const navigate = useNavigate();
@@ -15,9 +16,8 @@ const RegisterConfirmPage: React.FC = () => {
   ) => {
     try {
       confirmRegistration({ email, verificationCode });
-      navigate("/login", {
-        state: { message: "Successfully verified your email! Please login." },
-      });
+      navigate("/login");
+      toast.success("Successfully verified your email! Please login.");
     } catch (error) {
       console.error("Could not confirm account: ", error);
       alert("Confirmation failed. Please try again.");
