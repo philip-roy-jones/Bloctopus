@@ -136,7 +136,7 @@ export const authService = {
 
       if (!token) throw new Error('Invalid or expired verification code');
 
-      await tx.verificationToken.delete({ where: { id: token.id } });
+      await tx.verificationToken.deleteMany({ where: { id: token.id, type: "email_verification" } });
       await tx.user.update({ where: { email }, data: { isVerified: true } });
     });
   },
@@ -204,6 +204,14 @@ export const authService = {
     await prisma.user.update({
       where: { id: Number(decoded.userId) },
       data: { hashedPassword },
+    });
+
+    // Destroy the password reset token
+    await prisma.verificationToken.deleteMany({
+      where: {
+        userId: Number(decoded.userId),
+        type: 'password_reset',
+      },
     });
   },
 
