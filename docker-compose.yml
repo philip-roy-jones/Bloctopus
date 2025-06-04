@@ -135,6 +135,14 @@ services:
     volumes:
       - redis-data:/data
 
+  suggestions-service:
+    build:
+      context: ./services/suggestions
+    ports:
+      - "4444:4444"
+    environment:
+      - NODE_ENV=production
+
 # TODO: In prod, containerize app and services and only allow requests within the docker network
 volumes:
   kong-db-data:
