@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, use } from "react";
 import { Task } from "@/types/Task";
 import { createTask } from "@/services/taskService";
 import { Button } from "@/components/ui/button";
@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useAppContext } from "@/context/AppContext";
+import { getRandomSuggestion } from "@/services/suggestionService";
 
 const NewTask: React.FC<{ onClose: () => void; closeOnCreate?: boolean }> = ({
   onClose,
@@ -14,6 +15,24 @@ const NewTask: React.FC<{ onClose: () => void; closeOnCreate?: boolean }> = ({
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const { setTasks } = useAppContext();
+
+  useEffect(() => {
+    fetchSuggestion();
+  }, []);
+
+  const fetchSuggestion = async () => {
+      try {
+        const suggestion = await getRandomSuggestion();
+        if (suggestion) {
+          const inputElement = document.getElementById("title") as HTMLInputElement;
+          if (inputElement) {
+            inputElement.placeholder = suggestion;
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch suggestion:", error);
+      }
+    };
 
   const onTaskCreated = (task: Task) => {
     setTasks((prevTasks: Task[]) => [...prevTasks, task]);
@@ -38,6 +57,15 @@ const NewTask: React.FC<{ onClose: () => void; closeOnCreate?: boolean }> = ({
     }
   };
 
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setTitle(value);
+
+    if (value === "") {
+      fetchSuggestion();
+    }
+  };
+
   return (
     <form
       onSubmit={handleSubmit}
@@ -48,8 +76,7 @@ const NewTask: React.FC<{ onClose: () => void; closeOnCreate?: boolean }> = ({
         <Label htmlFor="title">Title</Label>
         <Input
           id="title"
-          placeholder="Enter task title"
-          onChange={(e) => setTitle(e.target.value)}
+          onChange={handleTitleChange}
           required
         />
       </div>
@@ -58,7 +85,6 @@ const NewTask: React.FC<{ onClose: () => void; closeOnCreate?: boolean }> = ({
         <Label htmlFor="description">Description</Label>
         <Textarea
           id="description"
-          placeholder="Optional task description"
           onChange={(e) => setDescription(e.target.value)}
         />
       </div>
