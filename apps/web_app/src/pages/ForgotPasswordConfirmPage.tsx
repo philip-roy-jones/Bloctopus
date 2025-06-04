@@ -1,24 +1,18 @@
 import React, { useState } from "react";
 import ForgotPasswordConfirmForm from "@/components/auth/ForgotPasswordConfirmForm";
 import ResetPasswordForm from "@/components/auth/ResetPasswordForm";
+import LogoHeader from "@/components/layout/LogoHeader";
 
 const ForgotPasswordConfirmPage: React.FC = () => {
   const [successfulCode, setSuccessfulCode] = useState(false);
 
   return (
-    <div>
-      <h1>Reset Your Password</h1>
+    <div className="flex flex-col min-h-screen items-center justify-center bg-gray-100 p-4">
+      <LogoHeader />
       {!successfulCode ? (
-      <div>
-        <h2>Enter the code sent to your email</h2>
-        <p>Please check your spam inbox as well</p>
         <ForgotPasswordConfirmForm setSuccessfulCode={setSuccessfulCode} />
-      </div>
       ) : (
-      <div>
-        <h2>Reset Your Password</h2>
         <ResetPasswordForm />
-      </div>
       )}
     </div>
   );

@@ -71,3 +71,13 @@ export const validateForgotPassword = (email: string): { field: string; message:
 
   return errors;
 };
+
+export const validatePasswordResetCode = (code: string): { field: string; message: string }[] => {
+  const errors: { field: string; message: string }[] = [];
+
+  if (!code) {
+    errors.push({ field: "code", message: "Code is required" });
+  }
+
+  return errors;
+}

@@ -110,6 +110,10 @@ export const confirmForgotPassword: RequestHandler = async (req, res) => {      
     res.cookie('resetPasswordCookie', jwt, { httpOnly: true, secure: true, sameSite: 'strict', maxAge: PASSWORD_RESET_DURATION });
     res.status(200).json({ message: 'Code is valid' });
   } catch (error: any) {
+    if (error instanceof MultiValidationError) {
+      res.status(400).json(error.errors);
+      return;
+    }
     res.status(400).json({ error: error.message || 'Password reset failed' });
   }
 };

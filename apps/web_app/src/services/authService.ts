@@ -95,9 +95,13 @@ export const confirmPasswordReset = async (code: string): Promise<void> => {
       credentials: "include",
       body: JSON.stringify({ code }),
     });
-    if (!response.ok) {
+
+    if (response.status === 400) {
       const errorData = await response.json();
-      throw new Error(errorData.error || "Failed to confirm password reset");
+      throw new MultiValidationError(errorData);
+    } else if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Failed to verify code");
     }
   } catch (error) {
     console.error("Password reset confirmation request failed:", error);

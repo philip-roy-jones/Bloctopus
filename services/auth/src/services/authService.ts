@@ -5,7 +5,7 @@ import { sendPasswordResetEmail } from '../helpers/sendPasswordResetEmail';
 import jwt from 'jsonwebtoken';
 import { AUTH_SECRET, PASSWORD_RESET_SECRET, PASSWORD_RESET_DURATION, SESSION_EXPIRATION } from '../config/config';
 import { UnauthorizedError } from '../errors/UnauthorizedError';
-import { validatePasswordReset, validateRegistration, validateForgotPassword } from '../helpers/authUtils';
+import { validatePasswordReset, validateRegistration, validateForgotPassword, validatePasswordResetCode } from '../helpers/authUtils';
 import { MultiValidationError } from '../errors/MultiValidationError';
 
 if (!AUTH_SECRET) {
@@ -165,7 +165,9 @@ export const authService = {
   },
 
   confirmForgotPassword: async (code: string) => {
-    if (!code) throw new Error('Password reset code is required');
+    const errors = validatePasswordResetCode(code);
+
+    if (errors.length) throw new MultiValidationError(errors);
 
     const token = await prisma.verificationToken.findFirst({
       where: {
@@ -175,7 +177,10 @@ export const authService = {
       },
     });
 
-    if (!token) throw new Error('Invalid or expired verification code');
+    if (!token) {
+      errors.push({ field: 'code', message: 'Invalid or expired password reset code' });
+      throw new MultiValidationError(errors);
+    }
 
     // Generates a JWT for password reset, valid for 10 minutes
     const jwtToken = jwt.sign(
