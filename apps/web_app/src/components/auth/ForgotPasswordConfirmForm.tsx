@@ -23,6 +23,7 @@ const ForgotPasswordConfirmForm: React.FC<ForgotPasswordConfirmFormProps> = ({
     code?: string;
     all?: string;
   }>({});
+  const [cooldownTime, setCooldownTime] = useState(0);
 
   useEffect(() => {
     const queryCode = searchParams.get("code");
@@ -50,6 +51,37 @@ const ForgotPasswordConfirmForm: React.FC<ForgotPasswordConfirmFormProps> = ({
       })();
     }
   }, [searchParams, setSuccessfulCode]);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (cooldownTime > 0) {
+      timer = setInterval(() => {
+        setCooldownTime((prev) => {
+          if (prev <= 1) {
+            clearInterval(timer);
+            return 0; // End cooldown
+          }
+          return prev - 1; // Decrease countdown
+        });
+      }, 1000); // Update every second
+    }
+    return () => clearInterval(timer); // Cleanup timer on unmount
+  }, [cooldownTime]);
+
+  const handleResendCode = async () => {
+    try {
+      const email = searchParams.get("email");
+      if (!email) {
+        setErrors({ all: "Email is required to resend the code." });
+        return;
+      }
+      await sendPasswordResetEmail(email);
+      toast.success("Code resent successfully. Please check your email.");
+      setCooldownTime(30);
+    } catch (error) {
+      setErrors({ all: "Failed to resend code. Please try again later." });
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -101,12 +133,17 @@ const ForgotPasswordConfirmForm: React.FC<ForgotPasswordConfirmFormProps> = ({
             <div className="space-y-2">
               <Button
                 type="button"
-                className="w-full bg-gray-600 hover:bg-gray-700"
+                className={`w-full bg-gray-600 hover:bg-gray-700 ${
+                  cooldownTime > 0 ? "opacity-50 cursor-not-allowed" : ""
+                }`}
                 onClick={async () => {
-                  alert("To be implemented: Resend code functionality");
+                  if (cooldownTime === 0) {
+                    await handleResendCode();
+                  }
                 }}
+                disabled={cooldownTime > 0} // Disable button during cooldown
               >
-                Resend Code
+                {cooldownTime > 0 ? `Resend Code (${cooldownTime}s)` : "Resend Code"}
               </Button>
             </div>
 
