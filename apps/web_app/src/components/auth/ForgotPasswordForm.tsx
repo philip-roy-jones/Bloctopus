@@ -19,9 +19,9 @@ const ForgotPasswordForm: React.FC<{ setRequest200: (value: boolean) => void }> 
 
     try {
       await sendPasswordResetEmail(email);
-      setRequest200(true); // Set the request status to 200 on success
+      setRequest200(true);
     } catch (error) {
-      setRequest200(false); // Set the request status to false on failure
+      setRequest200(false);
       if (error instanceof MultiValidationError) {
         const validationErrors: { [key: string]: string } = {};
         error.errors.forEach((err) => {
