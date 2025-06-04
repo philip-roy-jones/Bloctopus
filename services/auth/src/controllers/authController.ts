@@ -92,8 +92,13 @@ export const forgotPassword: RequestHandler = async (req, res) => {             
   try {
     const { email } = req.body;
     await authService.forgotPassword(email);
-    res.status(200).json({ message: 'Password reset email sent successfully' });
+    res.status(200).json({ message: 'If an account with that email exists, you\'ll receive an email with instructions to reset your password.' });
   } catch (error: any) {
+    if (error instanceof MultiValidationError) {
+      res.status(400).json(error.errors);
+      return;
+    }
+    console.log('Error in forgotPassword:', error);
     res.status(400).json({ error: error.message || 'Password reset failed' });
   }
 }

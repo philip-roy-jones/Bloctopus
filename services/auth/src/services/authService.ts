@@ -5,9 +5,8 @@ import { sendPasswordResetEmail } from '../helpers/sendPasswordResetEmail';
 import jwt from 'jsonwebtoken';
 import { AUTH_SECRET, PASSWORD_RESET_SECRET, PASSWORD_RESET_DURATION, SESSION_EXPIRATION } from '../config/config';
 import { UnauthorizedError } from '../errors/UnauthorizedError';
-import { validatePasswordReset, validateRegistration } from '../helpers/authUtils';
+import { validatePasswordReset, validateRegistration, validateForgotPassword } from '../helpers/authUtils';
 import { MultiValidationError } from '../errors/MultiValidationError';
-import { validate } from '../controllers/authController';
 
 if (!AUTH_SECRET) {
   throw new Error('AUTH_SECRET is not defined in the environment variables');
@@ -143,15 +142,16 @@ export const authService = {
   },
 
   forgotPassword: async (email: string) => {
-    if (!email) throw new Error('Email is required');
+    const errors = validateForgotPassword(email);
+
+    if (errors.length) throw new MultiValidationError(errors);
 
     const user = await prisma.user.findUnique({ where: { email } });
 
-    if (!user) throw new Error('User not found');
-    if (!user.isVerified) throw new Error('Email not verified');
+    if (!user) return;
 
     const resetCode = Math.floor(100000 + Math.random() * 900000).toString();
-    const token = await prisma.verificationToken.create({
+    await prisma.verificationToken.create({
       data: {
         userId: user.id,
         token: resetCode,

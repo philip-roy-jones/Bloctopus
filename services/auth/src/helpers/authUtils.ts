@@ -57,3 +57,17 @@ export const validatePasswordReset = (password: string, confirmPassword: string,
 
   return errors;
 }
+
+export const validateForgotPassword = (email: string): { field: string; message: string }[] => {
+  const errors: { field: string; message: string }[] = [];
+
+  if (!email) {
+    errors.push({ field: "email", message: "Email is required" });
+  }
+
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    errors.push({ field: "email", message: "Email is not valid" });
+  }
+
+  return errors;
+};

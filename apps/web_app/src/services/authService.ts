@@ -72,9 +72,12 @@ export const sendPasswordResetEmail = async (email: string): Promise<void> => {
       body: JSON.stringify({ email }),
     });
 
-    if (!response.ok) {
+    if (response.status === 400) {
       const errorData = await response.json();
-      throw new Error(errorData.error || "Failed to send password reset email");
+      throw new MultiValidationError(errorData);
+    } else if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Password reset email failed");
     }
   } catch (error) {
     console.error("Password reset request failed:", error);
