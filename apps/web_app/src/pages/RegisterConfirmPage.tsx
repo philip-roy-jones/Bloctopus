@@ -47,28 +47,10 @@ const RegisterConfirmPage: React.FC = () => {
   return (
     <>
       <div className="flex flex-col min-h-screen items-center justify-center bg-gray-100 p-4">
-        <h2>Confirm your email: {email}</h2>
-        <p>Please check your inbox for the verification code.</p>
         <RegisterConfirmForm
           email={email}
           submitConfirmation={submitConfirmation}
         />
-        <button
-          onClick={async () => {
-            try {
-              await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate API call delay
-              console.log(`Resending verification email to ${email}`);
-              alert(
-                "Verification email resent. Please check your inbox.\n\nThis is a simulation of the resend functionality."
-              );
-            } catch (error) {
-              console.error("Error resending verification email: ", error);
-              alert("Failed to resend verification email. Please try again.");
-            }
-          }}
-        >
-          Resend Verification Email
-        </button>
       </div>
     </>
   );

@@ -34,6 +34,30 @@ export async function registerUser({
   }
 }
 
+export async function resendVerificationCode(email: string): Promise<void> {
+  try {
+    const response = await fetch(`/api/auth/register/resend`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({ email }),
+    });
+
+    if (response.status === 400) {
+      const errorData = await response.json();
+      throw new MultiValidationError(errorData);
+    } else if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Resend verification code failed");
+    }
+  } catch (error) {
+    console.error("Resend verification code request failed:", error);
+    throw error;
+  }
+}
+
 export async function confirmRegistration({
   email,
   verificationCode,
