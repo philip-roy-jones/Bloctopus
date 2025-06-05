@@ -1,5 +1,5 @@
 import React, { useState, useEffect, use } from "react";
-import { Task } from "@/types/Task";
+import { Task, CreateTask } from "@/types/Task";
 import { createTask } from "@/services/taskService";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,6 +14,8 @@ const NewTask: React.FC<{ onClose: () => void; closeOnCreate?: boolean }> = ({
 }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
   const { setTasks } = useAppContext();
 
   useEffect(() => {
@@ -44,13 +46,16 @@ const NewTask: React.FC<{ onClose: () => void; closeOnCreate?: boolean }> = ({
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
-      const createdTask = await createTask({
-        title,
-        description,
-      });
+      const taskData: CreateTask = { title, description };
+      if (startTime) taskData.startTime = startTime;
+      if (endTime) taskData.endTime = endTime;
+
+      const createdTask = await createTask(taskData);
       onTaskCreated(createdTask);
       setTitle("");
       setDescription("");
+      setStartTime("");
+      setEndTime("");
       (event.target as HTMLFormElement).reset();
     } catch (error) {
       console.error("Failed to create task:", error);
@@ -87,6 +92,25 @@ const NewTask: React.FC<{ onClose: () => void; closeOnCreate?: boolean }> = ({
           id="description"
           onChange={(e) => setDescription(e.target.value)}
         />
+      </div>
+
+      <div className="flex space-x-4 items-center">
+        <div className="flex flex-col">
+          <Label htmlFor="startTime">Start Time</Label>
+          <Input
+        id="startTime"
+        type="datetime-local"
+        onChange={(e) => setStartTime(new Date(e.target.value).toISOString())}
+          />
+        </div>
+        <div className="flex flex-col">
+          <Label htmlFor="endTime">End Time</Label>
+          <Input
+        id="endTime"
+        type="datetime-local"
+        onChange={(e) => setEndTime(new Date(e.target.value).toISOString())}
+          />
+        </div>
       </div>
 
       <div className="flex justify-end">

@@ -40,12 +40,13 @@ export const show = async (req: Request, res: Response, next: NextFunction): Pro
 };
 
 export const create = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  console.log('Creating task with data:', req.body);
   try {
     const userId = getUserId(req, res);
     if (!userId) return;
 
     const taskData: CreateTaskInput = req.body;
-
+    console.log('Task data:', taskData);
     if (!taskData || !taskData.title) {
       res.status(400).json({ message: 'Task data is required' });
       return;

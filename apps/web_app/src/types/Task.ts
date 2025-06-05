@@ -2,6 +2,8 @@
 export interface CreateTask {
   title: string;
   description?: string;
+  startTime?: string; // ISO date string
+  endTime?: string; // ISO date string
 }
 
 // Interface for updating a task
@@ -19,4 +21,6 @@ export interface Task {
   createdAt: Date;
   updatedAt: Date;
   userId: string;
+  startTime?: string; // ISO date string
+  endTime?: string; // ISO date string
 }

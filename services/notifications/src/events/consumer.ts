@@ -18,7 +18,7 @@ export async function startReminderConsumer() {
 
   channel.consume(queue, async (msg: ConsumeMessage | null) => {
     if (!msg) return;
-
+    console.log('Received message:', msg.content.toString());
     try {
       const { type, data } = JSON.parse(msg.content.toString());
 

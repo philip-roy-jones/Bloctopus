@@ -44,7 +44,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       credentials: "include", // Important for sending cookies
       body: JSON.stringify(credentials),
     });
-
+    console.log("Login response: ", await response.json());
     if (!response.ok) {
       if (response.status === 401) {
         throw new UnauthorizedError("Invalid email or password");

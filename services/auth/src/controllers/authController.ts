@@ -137,6 +137,7 @@ export const resetPassword: RequestHandler = async (req, res) => {              
 
 export const login: RequestHandler = async (req, res) => {
   try {
+    console.log('Login request received:', req.body);
     const { email, password } = req.body;
     const jwtToken = await authService.loginUser(email, password);
     res.cookie('sessionCookie', jwtToken, { httpOnly: true, secure: true, sameSite: 'strict', maxAge: SESSION_EXPIRATION });

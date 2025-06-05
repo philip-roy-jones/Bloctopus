@@ -11,6 +11,7 @@ with open("messages.json", "r", encoding="utf-8") as f:
 
 @app.get("/api/suggestions/random")
 def get_motivation():
+    print("Received request for random suggestion")
     return random.choice(messages)
 
 #Add this block to run the application,

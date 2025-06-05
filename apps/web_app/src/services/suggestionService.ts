@@ -14,6 +14,7 @@ export const getRandomSuggestion = async (): Promise<string> => {
     }
 
     const suggestion = await response.json();
+    console.log("Random suggestion fetched:", suggestion);
     return suggestion
   } catch (error) {
     console.error("Fetch suggestion request failed:", error);
