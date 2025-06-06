@@ -1,7 +1,3 @@
-## 📌 CS361 Final Submission
-
-This branch (`cs361-final-submission`) represents the exact version of the project submitted for grading on **June 4, 2025**.
-
-No further changes will be made to this branch.
-
-For continued development, see the `main` branch.
+- If you're running this project locally, be sure to run the following command after starting the Kong database, but before starting the full Docker Compose stack. This initializes the database properly:
+  
+  `docker compose run --rm kong kong migrations bootstrap`
