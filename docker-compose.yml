@@ -14,6 +14,8 @@ services:
     image: kong:3.6
     depends_on:
       - kong-database
+      - kong-migrations
+    restart: on-failure
     environment:
       KONG_DATABASE: postgres
       KONG_PG_HOST: kong-database
@@ -27,6 +29,17 @@ services:
     ports:
       - "8000:8000"   # Public gateway
       - "8001:8001"   # Admin API
+
+  kong-migrations:
+    image: kong:3.6
+    depends_on:
+      - kong-database
+    command: kong migrations bootstrap
+    environment:
+      KONG_DATABASE: postgres
+      KONG_PG_HOST: kong-database
+      KONG_PG_USER: kong
+      KONG_PG_PASSWORD: kong
 
   kong-database:
     image: postgres:13
