@@ -31,10 +31,10 @@ services:
       - NODE_ENV=development
     command: ["/app/entrypoint.sh"]
 
-  api-gateway:
+  nginx:
     volumes:
-      - ./api-gateway/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./api-gateway/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
 
 volumes:
   web-app-node-modules:

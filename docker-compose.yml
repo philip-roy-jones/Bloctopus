@@ -1,4 +1,15 @@
 services:
+  nginx:
+    build:
+      context: ./nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - web-app
+      - auth-service
+      - tasks-service
+    command: ["/wait-for-services.sh"]
+
   kong:
     image: kong:3.6
     depends_on:
@@ -27,17 +38,6 @@ services:
       - "5432:5432"
     volumes:
       - kong-db-data:/var/lib/postgresql/data
-
-  api-gateway:
-    build:
-      context: ./api-gateway
-    ports:
-      - "80:80"
-    depends_on:
-      - web-app
-      - auth-service
-      - tasks-service
-    command: ["/wait-for-services.sh"]
 
   rabbitmq:
     image: rabbitmq:4.1-management
