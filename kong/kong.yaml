@@ -1,0 +1,16 @@
+_format_version: "1.0"
+
+services:
+  - name: auth-service
+    url: http://auth-service:1111
+    routes:
+      - name: auth-route
+        paths:
+          - /api/auth
+
+  - name: tasks-service
+    url: http://tasks-service:2222
+    routes:
+      - name: tasks-route
+        paths:
+          - /api/tasks

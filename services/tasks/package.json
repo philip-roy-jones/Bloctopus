@@ -1,7 +1,7 @@
 {
   "name": "tasks",
   "version": "1.0.0",
-  "description": "Task microservice for Taskify",
+  "description": "Task microservice for Bloctopus",
   "license": "ISC",
   "author": "Philip Jones",
   "type": "module",
@@ -11,7 +11,7 @@
     "build": "tsc"
   },
   "dependencies": {
-    "@philip-roy-jones/taskify-lib": "^1.0.1",
+    "@philip-roy-jones/bloctopus-lib": "^1.0.1",
     "@prisma/client": "^6.8.2",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",

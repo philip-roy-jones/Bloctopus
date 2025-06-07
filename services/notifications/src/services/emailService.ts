@@ -29,7 +29,7 @@ Just a quick reminder about your upcoming task: "${reminder.title}".
 Don't forget to take action if needed before it begins!
 
 Best,
-Taskify
+Bloctopus
     `,
     html: `
       <div style="font-family: sans-serif; line-height: 1.6;">
@@ -42,7 +42,7 @@ Taskify
           <li><strong>End Time:</strong> ${reminder.endTime.toLocaleString()}</li>
         </ul>
         <p>Don't forget to take action if needed before it begins!</p>
-        <p>— Taskify</p>
+        <p>— Bloctopus</p>
       </div>
     `,
   };

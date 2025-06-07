@@ -1,4 +1,4 @@
-import { createRabbitChannel } from '@philip-roy-jones/taskify-lib';
+import { createRabbitChannel } from '@philip-roy-jones/bloctopus-lib';
 import { RABBITMQ_DEFAULT_USER, RABBITMQ_DEFAULT_PASSWORD, RABBITMQ_HOST, RABBITMQ_PORT } from '@/config/config';
 import { ReminderInput } from '@/types/Reminder';
 

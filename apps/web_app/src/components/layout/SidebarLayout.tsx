@@ -34,11 +34,11 @@ const SidebarLayout: React.FC = () => {
             <Link to="/" className="flex items-center justify-between w-full pr-2">
             <div className="flex items-center gap-2">
               <img
-              src="/src/assets/images/taskify-icon.svg"
-              alt="Taskify"
+              src="/src/assets/images/bloctopus-icon.svg"
+              alt="Bloctopus"
               className="h-8 w-8"
               />
-              <h1 className="text-lg font-bold">Taskify</h1>
+              <h1 className="text-lg font-bold">Bloctopus</h1>
             </div>
             {state === "expanded" && <SidebarTrigger />}
             </Link>

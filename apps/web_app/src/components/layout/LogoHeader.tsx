@@ -1,11 +1,11 @@
 import React from "react";
-import taskifyIcon from "@/assets/images/taskify-icon.svg";
+import bloctopusIcon from "@/assets/images/bloctopus-icon.svg";
 
 const LogoHeader: React.FC = () => {
   return (
     <div className="w-full flex items-center justify-center mb-4">
-      <img src={taskifyIcon} alt="Taskify Icon" className="h-10" />
-      <p className="text-4xl font-bold ml-2">Taskify</p>
+      <img src={bloctopusIcon} alt="Bloctopus Icon" className="h-10" />
+      <p className="text-4xl font-bold ml-2">Bloctopus</p>
     </div>
   );
 };
