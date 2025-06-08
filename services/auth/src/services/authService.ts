@@ -3,13 +3,13 @@ import { PrismaClient } from '@prisma/client';
 import { sendVerificationEmail } from '../helpers/sendVerificationEmail';
 import { sendPasswordResetEmail } from '../helpers/sendPasswordResetEmail';
 import jwt from 'jsonwebtoken';
-import { AUTH_SECRET, PASSWORD_RESET_SECRET, PASSWORD_RESET_DURATION, SESSION_EXPIRATION } from '../config/config';
+import { PASSWORD_RESET_SECRET, PASSWORD_RESET_DURATION, SESSION_EXPIRATION, PRIVATE_KEY } from '../config/config';
 import { UnauthorizedError } from '../errors/UnauthorizedError';
 import { validatePasswordReset, validateRegistration, validateForgotPassword, validatePasswordResetCode } from '../helpers/authUtils';
 import { MultiValidationError } from '../errors/MultiValidationError';
 
-if (!AUTH_SECRET) {
-  throw new Error('AUTH_SECRET is not defined in the environment variables');
+if (!PRIVATE_KEY) {
+  throw new Error('PRIVATE_KEY is not defined in the environment variables. Check if the private.pem file exists in src/config/secrets.');
 }
 if (!PASSWORD_RESET_SECRET) {
   throw new Error('PASSWORD_RESET_SECRET is not defined in the environment variables');
@@ -203,11 +203,13 @@ export const authService = {
 
     // Generate JWT Token
     const token = jwt.sign(
-      {
-        userId: user.id,
-      },
-      AUTH_SECRET as string,
-      { expiresIn: Math.floor(SESSION_EXPIRATION / 1000) }
+      { userId: user.id },
+      PRIVATE_KEY,
+      { 
+        algorithm: 'RS256',
+        expiresIn: Math.floor(SESSION_EXPIRATION / 1000),
+        keyid: 'auth-client'
+      }
     );
     return token;
   },

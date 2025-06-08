@@ -1,11 +1,10 @@
 import { Router } from 'express';
 import { register, confirmRegistration, login, resendVerification, forgotPassword, getMe, confirmForgotPassword, resetPassword, logout, getUserEmail } from '../controllers/authController';
-import { authenticate } from '../middleware/authMiddleware';
 
 const router = Router();
 
-router.post('/logout', authenticate, logout);
-router.get('/me', authenticate, getMe);
+router.post('/logout', logout);
+router.get('/me', getMe);
 router.get('/users/:id/email', getUserEmail )         // TODO: this should be protected, but short on time
 router.post('/register', register);
 router.post('/verification/resend', resendVerification );

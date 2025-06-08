@@ -1,5 +1,22 @@
 _format_version: "1.1"
 
+consumers:
+  - username: auth-client
+    custom_id: auth-client-id
+    jwt_secrets:
+      - algorithm: RS256
+        key: auth-client    # keyid in JWT header
+        rsa_public_key: |
+          -----BEGIN PUBLIC KEY-----
+          MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2t4JS/5aMxvPQMonb4q0
+          EDH6GcomySzBbowZ9OuTKBnuf51NgCI12xNMpEhqrm+d1VsEw0MaoDqFyvpXhFWk
+          KHQhjlxrHPX5MyuLyS7sx5ERmPw2bPgX036qfVY9xyMpgiQbVWLD8rTKijT0Tg9H
+          5iTZ5WRMeKvdZn9svQGqMS++VPl0zKW3xhJIiwdiOkQFcp23sinAAdsGI+O1eKCz
+          ZfjvU0VhKvwvWTiG5RtnzexyaBYifoD10LgBEOw29XjDBHHpV5EkczmRiiLkMnqs
+          mPNYfsENXqaj/JAPP1rbhMADRUHCx6NkZbaBV7FHVbbQX7oYNn/FgIuwHlTlyvqq
+          RQIDAQAB
+          -----END PUBLIC KEY-----
+
 upstreams:
   - name: auth-service-upstream
     targets:
@@ -43,3 +60,5 @@ services:
         strip_path: false
         paths:
           - /api/auth/logout
+        plugins:
+          - name: jwt
