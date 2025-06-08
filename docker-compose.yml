@@ -1,7 +1,7 @@
 services:
   nginx:
     build:
-      context: ./nginx
+      context: ./infrastructure/nginx
     ports:
       - "80:80"
     depends_on:
@@ -97,7 +97,7 @@ services:
       MYSQL_PORT: 3306
     volumes:
       - auth-data:/var/lib/mysql
-      - ./database-inits/auth.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./infrastructure/database-inits/auth.sql:/docker-entrypoint-initdb.d/init.sql
     env_file:
       - .env
 
@@ -125,7 +125,7 @@ services:
       MYSQL_PORT: 3306
     volumes:
       - tasks-data:/var/lib/mysql
-      - ./database-inits/tasks.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./infrastructure/database-inits/tasks.sql:/docker-entrypoint-initdb.d/init.sql
     env_file:
       - .env
 
