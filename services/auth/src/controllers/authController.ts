@@ -5,36 +5,6 @@ import { PASSWORD_RESET_DURATION, SESSION_EXPIRATION } from '../config/config';
 import { UnauthorizedError } from '../errors/UnauthorizedError';
 import { MultiValidationError } from '../errors/MultiValidationError';
 
-export const validate: RequestHandler = async (req: AuthRequest, res): Promise<void> => {
-  try {
-    if (req.get('X-Internal-Request') !== 'true') {
-      res.status(403).json({ message: 'Forbidden' });
-      return;
-    }
-
-    if (req.user) {
-      try {
-        await authService.validate(req.user.userId);
-      } catch (error: any) {
-        if (error instanceof UnauthorizedError) {
-          res.status(401).json({ error: error.message || 'Unauthorized' });
-          return;
-        }
-        throw error;
-      }
-
-      res.setHeader('X-User-ID', req.user.userId);
-    } else {
-      res.status(400).json({ error: 'User information is missing' });
-      return;
-    }
-    res.sendStatus(200);
-  } catch (error: any) {
-    console.error('Error setting headers:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-};
-
 export const getUserEmail: RequestHandler = async (req, res) => {
   try {
     const userId = req.params.id;

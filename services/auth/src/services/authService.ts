@@ -18,29 +18,6 @@ if (!PASSWORD_RESET_SECRET) {
 const prisma = new PrismaClient();
 
 export const authService = {
-  validate: async (userId: string) => {
-    try {
-      const user = await prisma.user.findUnique({ where: { id: Number(userId) } });
-      if (!user) throw new UnauthorizedError('User not found');
-
-      if (!user.isVerified) throw new UnauthorizedError('Email not verified');
-
-      // Optionally, you can return user details or just a success message
-      return {
-        id: user.id,
-        email: user.email,
-        role: user.role,
-        displayName: user.displayName,
-      };
-    } catch (error) {
-      if (error instanceof UnauthorizedError) {
-        console.error('Unauthorized access attempt rethrowing...');
-        throw error; // Re-throw UnauthorizedError to be handled by the controller
-      }
-      console.error('Error validating user:', error);
-      throw new Error('Internal server error during validation');
-    }
-  },
 
   getUserEmail: async (userId: string) => {
     if (!userId) throw new Error('User ID is required');
