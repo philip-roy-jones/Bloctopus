@@ -5,27 +5,6 @@ import { PASSWORD_RESET_DURATION, SESSION_EXPIRATION } from '../config/config';
 import { UnauthorizedError } from '../errors/UnauthorizedError';
 import { MultiValidationError } from '../errors/MultiValidationError';
 
-export const getUserEmail: RequestHandler = async (req, res) => {
-  try {
-    const userId = req.params.id;
-    if (!userId) {
-      res.status(400).json({ error: 'User ID is required' });
-      return;
-    }
-
-    const user = await authService.getUserEmail(userId);
-    if (!user) {
-      res.status(404).json({ error: 'User not found' });
-      return;
-    }
-
-    res.status(200).json({ email: user.email });
-  } catch (error: any) {
-    console.error('Error fetching user email:', error);
-    res.status(500).json({ error: error.message || 'Failed to fetch user email' });
-  }
-};
-
 export const register: RequestHandler = async (req, res) => {
   try {
     await authService.registerUser(req.body.email, req.body.password, req.body.confirmPassword, req.body.acceptedTerms);
@@ -131,19 +110,5 @@ export const logout: RequestHandler = async (req, res) => {
     res.status(200).json({ message: 'Logout successful' });
   } catch (error: any) {
     res.status(400).json({ error: error.message || 'Logout failed' });
-  }
-};
-
-export const getMe: RequestHandler = async (req: AuthRequest, res): Promise<void> => {
-  try {
-    const userParam = req.user;
-    if (!userParam) {
-      res.status(401).json({ message: 'Unauthorized' });
-      return;
-    }
-    const user = await authService.getMe(userParam.userId);
-    res.status(200).json(user);
-  } catch (error: any) {
-    res.status(400).json({ error: error.message || 'Failed to fetch user' });
   }
 };

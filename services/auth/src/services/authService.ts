@@ -18,14 +18,6 @@ if (!PASSWORD_RESET_SECRET) {
 const prisma = new PrismaClient();
 
 export const authService = {
-
-  getUserEmail: async (userId: string) => {
-    if (!userId) throw new Error('User ID is required');
-    const user = await prisma.user.findUnique({ where: { id: Number(userId) } });
-    if (!user) throw new Error('User not found');
-    return { email: user.email };
-  },
-
   registerUser: async (email: string, password: string, confirmPassword: string, acceptedTerms: boolean) => {
     const errors = validateRegistration(email, password, confirmPassword, acceptedTerms);
 
@@ -218,20 +210,6 @@ export const authService = {
     // TODO: Invalidate the user's session by blacklisting JWT
     console.log('Logging out user with token:', token);
   },
-
-
-  getMe: async (userId: string) => {
-    const user = await prisma.user.findUnique({ where: { id: Number(userId) } });
-    if (!user) throw new Error('User not found');
-    if (!user.isVerified) throw new Error('Email not verified');
-
-    return {
-      id: user.id,
-      email: user.email,
-      role: user.role,
-      displayName: user.displayName,
-    };
-  }
 };
 
 // Ensure Prisma disconnects when the application shuts down
