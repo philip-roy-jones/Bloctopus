@@ -149,7 +149,7 @@ services:
     env_file:
       - .env
 
-  notification-service:
+  notifications-service:
     build:
       context: ./services/notifications
     ports:
@@ -161,7 +161,7 @@ services:
     depends_on:
       - rabbitmq
 
-  notification-redis:
+  notifications-redis:
     image: redis:7
     ports:
       - "6380:6379"  # Expose only for debugging if needed
