@@ -1,4 +1,4 @@
-_format_version: "1.1"
+_format_version: "3.0"
 
 consumers:
   - username: auth-client
@@ -6,6 +6,7 @@ consumers:
     jwt_secrets:
       - algorithm: RS256
         key: auth-client    # keyid in JWT header
+        secret: fake-jwt-secret
         rsa_public_key: |
           -----BEGIN PUBLIC KEY-----
           MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2t4JS/5aMxvPQMonb4q0

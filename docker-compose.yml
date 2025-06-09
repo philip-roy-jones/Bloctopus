@@ -30,6 +30,26 @@ services:
       - "8000:8000"   # Public gateway
       - "8001:8001"   # Admin API
 
+  kong-deck-sync:
+    image: kong/deck:latest
+    depends_on:
+      - kong
+    volumes:
+      - ./infrastructure/kong:/config
+    environment:
+      DECK_KONG_ADDR: http://kong:8001
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        until deck gateway ping --kong-addr http://kong:8001; do
+          echo "⏳ Waiting for Kong…"
+          sleep 2
+        done
+        echo "✅ Kong is ready. Running deck gateway sync..."
+        deck gateway sync /config/deck.yaml
+    # entrypoint: ["tail", "-f", "/dev/null"]
+
   kong-migrations:
     image: kong:3.6
     depends_on:
