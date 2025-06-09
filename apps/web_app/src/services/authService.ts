@@ -36,7 +36,7 @@ export async function registerUser({
 
 export async function resendVerificationCode(email: string): Promise<void> {
   try {
-    const response = await fetch(`/api/auth/register/resend`, {
+    const response = await fetch(`/api/auth/verification/resend`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -66,7 +66,7 @@ export async function confirmRegistration({
   verificationCode: string;
 }): Promise<void> {
   try {
-    const response = await fetch(`/api/auth/register/confirm`, {
+    const response = await fetch(`/api/auth/verification`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -87,7 +87,7 @@ export async function confirmRegistration({
 
 export const sendPasswordResetEmail = async (email: string): Promise<void> => {
   try {
-    const response = await fetch(`/api/auth/forgot`, {
+    const response = await fetch(`/api/auth/forgot-password`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -111,7 +111,7 @@ export const sendPasswordResetEmail = async (email: string): Promise<void> => {
 
 export const confirmPasswordReset = async (code: string): Promise<void> => {
   try {
-    const response = await fetch(`/api/auth/forgot/confirm`, {
+    const response = await fetch(`/api/auth/reset-password/verify-code`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -135,7 +135,7 @@ export const confirmPasswordReset = async (code: string): Promise<void> => {
 
 export const resetPassword = async (newPassword: string, confirmPassword: string): Promise<void> => {
   try {
-    const response = await fetch(`/api/auth/forgot/reset`, {
+    const response = await fetch(`/api/auth/reset-password`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

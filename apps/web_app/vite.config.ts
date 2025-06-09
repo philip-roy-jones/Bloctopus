@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react-swc'
 import path from 'path'
 import tailwindcss from '@tailwindcss/vite';
 import dotenv from 'dotenv';
-import { API_GATEWAY_URL } from './src/config/config';
+import { NGINX_URL } from './src/config/config';
 
 dotenv.config();
 
@@ -18,7 +18,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: API_GATEWAY_URL,
+        target: NGINX_URL,
         changeOrigin: true,
         secure: false,
       }
