@@ -1,13 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
 import { taskService } from '../services/taskService';
 import { CreateTaskInput, UpdateTaskInput } from '../types/Task';
-import { getUserId } from '@/helpers/getUserId';
 
 // TODO: Sanitize and validate input data properly (skipping for now for simplicity)
 
 export const index = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const userId = getUserId(req, res);
+    const userId = (req as any).userId;
     if (!userId) return;
 
     const tasks = await taskService.index(
@@ -22,7 +21,7 @@ export const index = async (req: Request, res: Response, next: NextFunction): Pr
 
 export const show = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const userId = getUserId(req, res);
+    const userId = (req as any).userId;
     if (!userId) return;
 
     const taskId = req.params.id;
@@ -42,7 +41,7 @@ export const show = async (req: Request, res: Response, next: NextFunction): Pro
 export const create = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   console.log('Creating task with data:', req.body);
   try {
-    const userId = getUserId(req, res);
+    const userId = (req as any).userId;
     if (!userId) return;
 
     const taskData: CreateTaskInput = req.body;
@@ -62,7 +61,7 @@ export const create = async (req: Request, res: Response, next: NextFunction): P
 
 export const update = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const userId = getUserId(req, res);
+    const userId = (req as any).userId;
     if (!userId) return;
 
     const taskId = req.params.id;
@@ -90,7 +89,7 @@ export const update = async (req: Request, res: Response, next: NextFunction): P
 
 export const destroy = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const userId = getUserId(req, res);
+    const userId = (req as any).userId;
     if (!userId) return;
 
     const taskId = req.params.id;

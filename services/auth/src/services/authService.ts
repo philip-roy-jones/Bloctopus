@@ -195,7 +195,10 @@ export const authService = {
 
     // Generate JWT Token
     const token = jwt.sign(
-      { userId: user.id },
+      { 
+        userId: user.id,
+        iss: 'auth-client'
+      },
       PRIVATE_KEY,
       { 
         algorithm: 'RS256',

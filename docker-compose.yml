@@ -11,7 +11,8 @@ services:
     command: ["/wait-for-services.sh"]
 
   kong:
-    image: kong:3.6
+    build:
+      context: ./infrastructure/kong
     depends_on:
       - kong-database
       - kong-migrations
@@ -26,6 +27,7 @@ services:
       KONG_PROXY_ERROR_LOG: /dev/stderr
       KONG_ADMIN_ERROR_LOG: /dev/stderr
       KONG_ADMIN_LISTEN: 0.0.0.0:8001
+      KONG_PLUGINS: "bundled, jwt-payload-header"
     ports:
       - "8000:8000"   # Public gateway
       - "8001:8001"   # Admin API
@@ -176,7 +178,6 @@ services:
     environment:
       - NODE_ENV=production
 
-# TODO: In prod, containerize app and services and only allow requests within the docker network
 volumes:
   kong-db-data:
   auth-data:

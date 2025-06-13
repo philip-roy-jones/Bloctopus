@@ -20,7 +20,7 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "@philip-roy-jones/bloctopus-lib": "^1.0.1",
+    "@philip-roy-jones/bloctopus-lib": "^1.0.3",
     "@sendgrid/mail": "^8.1.5",
     "amqplib": "^0.10.8",
     "bullmq": "^5.53.1"

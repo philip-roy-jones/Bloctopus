@@ -3,10 +3,10 @@ import { index, create, destroy, update, show } from '../controllers/taskControl
 
 const router = Router();
 
-router.get('/tasks', index);
-router.get('/tasks/:id', show);
-router.post('/tasks', create);
-router.patch('/tasks/:id', update)
-router.delete('/tasks/:id', destroy);
+router.get('/', index);
+router.get('/:id', show);
+router.post('/', create);
+router.patch('/:id', update)
+router.delete('/:id', destroy);
 
 export default router;

@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
 import { categoryService } from '@/services/categoryService';
-import { getUserId } from '@/helpers/getUserId';
 
 // TODO: Sanitize and validate input data properly (skipping for now for simplicity)
 
@@ -8,7 +7,7 @@ export const index = async (req: Request, res: Response, next: NextFunction): Pr
   try {
     console.log('Fetching categories with query:', req.query);
 
-    const userId = getUserId(req, res);
+    const userId = (req as any).userId;
     if (!userId) return;
 
     const categories = await categoryService.index(
@@ -25,7 +24,7 @@ export const index = async (req: Request, res: Response, next: NextFunction): Pr
 
 export const create = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const userId = getUserId(req, res);
+    const userId = (req as any).userId;
     if (!userId) return;
 
     const categoryData: Category = req.body;
@@ -44,7 +43,7 @@ export const create = async (req: Request, res: Response, next: NextFunction): P
 
 export const update = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const userId = getUserId(req, res);
+    const userId = (req as any).userId;
     if (!userId) return;
 
     const categoryId = req.params.id;
@@ -69,7 +68,7 @@ export const update = async (req: Request, res: Response, next: NextFunction): P
 
 export const destroy = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const userId = getUserId(req, res);
+    const userId = (req as any).userId;
     if (!userId) return;
 
     const categoryId = req.params.id;

@@ -5,8 +5,8 @@ consumers:
     custom_id: auth-client-id
     jwt_secrets:
       - algorithm: RS256
-        key: auth-client    # keyid in JWT header
-        secret: fake-jwt-secret
+        key: auth-client
+        secret: fake-jwt-secret         # Kong does not use this field for RS256, but it is required for the configuration to be valid.
         rsa_public_key: |
           -----BEGIN PUBLIC KEY-----
           MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2t4JS/5aMxvPQMonb4q0
@@ -22,6 +22,9 @@ upstreams:
   - name: auth-service-upstream
     targets:
       - target: auth-service:1111
+  - name: tasks-service-upstream
+    targets:
+      - target: tasks-service:2222
 
 services:
   - name: auth-service
@@ -29,37 +32,35 @@ services:
     port: 1111
     protocol: http
     routes:
-      - name: login-route
+      - name: auth-public
         strip_path: false
         paths:
           - /api/auth/login
-      - name: register-route
-        strip_path: false
-        paths:
           - /api/auth/register
-      - name: resend-verification-route
-        strip_path: false
-        paths:
           - /api/auth/verification/resend
-      - name: verify-email-route
-        strip_path: false
-        paths:
           - /api/auth/verification
-      - name: forgot-password-route
-        strip_path: false
-        paths:
           - /api/auth/forgot-password
-      - name: verify-forgot-password-route
-        strip_path: false
-        paths:
           - /api/auth/reset-password/verify-code
-      - name: reset-password-route
-        strip_path: false
-        paths:
           - /api/auth/reset-password
-      - name: logout-route
+
+      - name: auth-protected
         strip_path: false
         paths:
+          - /api/users/me
           - /api/auth/logout
         plugins:
           - name: jwt
+          - name: jwt-payload-header
+
+  - name: tasks-service
+    host: tasks-service-upstream
+    port: 2222
+    protocol: http
+    routes:
+      - name: tasks-route
+        strip_path: false
+        paths:
+          - /api/tasks
+        plugins:
+          - name: jwt
+          - name: jwt-payload-header
