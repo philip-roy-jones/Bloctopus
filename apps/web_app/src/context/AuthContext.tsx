@@ -17,7 +17,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // 🟡 1. Fetch user info (e.g. on page refresh or app start)
   const fetchUser = async () => {
     try {
-      const res = await fetch(`/api/auth/me`, {
+      const res = await fetch(`/api/users/me`, {
         credentials: "include", // Send cookies with the request
       });
 

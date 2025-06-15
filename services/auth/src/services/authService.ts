@@ -186,10 +186,10 @@ export const authService = {
 
   loginUser: async (email: string, password: string) => {
     const user = await prisma.user.findUnique({ where: { email } });
-    if (!user) throw new UnauthorizedError('User not found');
+    if (!user) throw new UnauthorizedError('Invalid email or password');
 
     const isPasswordValid = await bcrypt.compare(password, user.hashedPassword);
-    if (!isPasswordValid) throw new UnauthorizedError('Invalid password');
+    if (!isPasswordValid) throw new UnauthorizedError('Invalid email or password');
 
     if (!user.isVerified) throw new UnauthorizedError('Email not verified');
 
@@ -203,15 +203,15 @@ export const authService = {
       { 
         algorithm: 'RS256',
         expiresIn: Math.floor(SESSION_EXPIRATION / 1000),
-        keyid: 'auth-client'
       }
     );
     return token;
   },
 
-  logoutUser: async (token: string) => {
-    // TODO: Invalidate the user's session by blacklisting JWT
-    console.log('Logging out user with token:', token);
+  logoutUser: async (userId: string) => {
+    // Since access tokens are only 10 minutes long, we just let them expire naturally.
+    // TODO: invalidate refresh token
+    console.log('Logging out user with token:', userId);
   },
 };
 

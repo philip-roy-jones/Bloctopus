@@ -25,13 +25,9 @@ export const getUserEmail: RequestHandler = async (req, res) => {
 
 export const getMe: RequestHandler = async (req: AuthRequest, res): Promise<void> => {
   try {
-    const userParam = req.user;
-    if (!userParam) {
-      res.status(401).json({ message: 'Unauthorized' });
-      return;
-    }
-    const user = await userService.getMe(userParam.userId);
-    console.log('User fetched:', user);
+    const userId = (req as any).userId;
+
+    const user = await userService.getMe(userId);
     res.status(200).json(user);
   } catch (error: any) {
     console.log('Error fetching user:', error);

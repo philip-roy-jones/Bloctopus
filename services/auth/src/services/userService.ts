@@ -11,7 +11,8 @@ export const userService = {
   },
 
   getMe: async (userId: string) => {
-    const user = await prisma.user.findUnique({ where: { id: Number(userId) } });
+    if (!userId) throw new Error('User ID is required');
+    const user = await prisma.user.findUnique({ where: { id: parseInt(userId, 10) } });
     if (!user) throw new Error('User not found');
     if (!user.isVerified) throw new Error('Email not verified');
 
