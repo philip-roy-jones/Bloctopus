@@ -25,6 +25,9 @@ upstreams:
   - name: tasks-service-upstream
     targets:
       - target: tasks-service:2222
+  - name: suggestions-service-upstream
+    targets:
+      - target: suggestions-service:4444
 
 services:
   - name: auth-service
@@ -64,3 +67,13 @@ services:
         plugins:
           - name: jwt
           - name: jwt-payload-header
+
+  - name: suggestions-service
+    host: suggestions-service-upstream
+    port: 4444
+    protocol: http
+    routes:
+      - name: suggestions-route
+        strip_path: false
+        paths:
+          - /api/suggestions
