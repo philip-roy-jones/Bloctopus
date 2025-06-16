@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ export const COOKIE_OPTIONS = {
 export const MAILER_API_KEY = process.env.MAILER_API_KEY;
 
 // Authentication key
-const __dirname = path.dirname(new URL(import.meta.url).pathname);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const privateKeyPath = path.resolve(__dirname, './secrets/private.pem');
 export const PRIVATE_KEY = fs.readFileSync(privateKeyPath, 'utf8');

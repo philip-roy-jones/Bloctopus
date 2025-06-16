@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '../db/client';
 import { sendVerificationEmail } from '../helpers/sendVerificationEmail';
 import { sendPasswordResetEmail } from '../helpers/sendPasswordResetEmail';
 import jwt from 'jsonwebtoken';
@@ -14,8 +14,6 @@ if (!PRIVATE_KEY) {
 if (!PASSWORD_RESET_SECRET) {
   throw new Error('PASSWORD_RESET_SECRET is not defined in the environment variables');
 }
-
-const prisma = new PrismaClient();
 
 export const authService = {
   registerUser: async (email: string, password: string, confirmPassword: string, acceptedTerms: boolean) => {

@@ -47,5 +47,4 @@ export const sendVerificationEmail = async (email: string, verificationCode: str
   };
 
   await sgMail.send(msg);
-  console.log('Verification email sent to:', email);
 };
