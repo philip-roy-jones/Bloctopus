@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { mockSendGrid } from '../../../testUtils/mocks/mockSendGrid';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { sendVerificationEmail } from '../../../src/helpers/sendVerificationEmail';
 
 describe('sendVerificationEmail', () => {

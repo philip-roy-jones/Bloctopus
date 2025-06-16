@@ -1,6 +1,6 @@
+import { mockPrisma } from '../../../testUtils/mocks/mockPrisma';
 import { describe, it, expect, vi, beforeEach, Mock } from 'vitest';
 import { MultiValidationError } from '../../../src/errors/MultiValidationError';
-import { mockPrisma } from '../../../testUtils/mocks/mockPrisma';
 import { authService } from '../../../src/services/authService';
 
 vi.mock('../../../src/db/client', () => ({
