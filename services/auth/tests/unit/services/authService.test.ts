@@ -14,18 +14,6 @@ vi.mock('../../../src/db/client', async () => {
   };
 });
 
-vi.mock('../../../src/config/config', async () => {
-  return {
-    PASSWORD_RESET_SECRET: 'mock-reset-secret',
-    SESSION_EXPIRATION: 1000 * 60 * 10,
-    PASSWORD_RESET_DURATION: 1000 * 60 * 10,
-    PRIVATE_KEY: 'FAKE_PRIVATE_KEY',
-    WEB_URL: 'http://localhost:3000',
-    MAILER_API_KEY: 'SG._FAKE_MAIL_KEY',
-    COOKIE_OPTIONS: {},
-  };
-});
-
 import { describe, it, expect, vi, beforeEach, Mock } from 'vitest';
 import { MultiValidationError } from '../../../src/errors/MultiValidationError';
 import { prisma } from '../../../src/db/client';
