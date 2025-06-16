@@ -1,27 +1,11 @@
-// Mocks
-vi.mock('../../../src/db/client', async () => {
-  return {
-    prisma: {
-      user: {
-        findUnique: vi.fn(),
-        create: vi.fn(),
-      },
-      verificationToken: {
-        create: vi.fn(),
-      },
-      $transaction: vi.fn(),
-    },
-  };
-});
-
 import { describe, it, expect, vi, beforeEach, Mock } from 'vitest';
 import { MultiValidationError } from '../../../src/errors/MultiValidationError';
-import { prisma } from '../../../src/db/client';
-
-// Helper
-const asMock = <T>(fn: T) => fn as Mock;
-
+import { mockPrisma } from '../../../testUtils/mocks/mockPrisma';
 import { authService } from '../../../src/services/authService';
+
+vi.mock('../../../src/db/client', () => ({
+  prisma: mockPrisma,
+}));
 
 describe('registerUser', () => {
   const mockEmail = 'test@example.com';
@@ -34,7 +18,7 @@ describe('registerUser', () => {
   });
 
   it('throws error if email is already registered', async () => {
-    asMock(prisma.user.findUnique).mockResolvedValue({ id: 'existing-user-id' });
+    mockPrisma.user.findUnique = vi.fn().mockResolvedValue({ id: 'existing-user-id' });
 
     await expect(authService.registerUser(mockEmail, mockPassword, mockConfirmPassword, mockAcceptedTerms))
       .rejects
