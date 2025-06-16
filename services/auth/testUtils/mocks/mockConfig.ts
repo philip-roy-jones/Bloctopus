@@ -1,6 +1,6 @@
 import { vi } from 'vitest';
 
-vi.mock('../../../src/config/config', () => ({
+vi.mock('../../src/config/config', () => ({
   PASSWORD_RESET_SECRET: 'mock-reset-secret',
   SESSION_EXPIRATION: 1000 * 60 * 10,
   PASSWORD_RESET_DURATION: 1000 * 60 * 10,
