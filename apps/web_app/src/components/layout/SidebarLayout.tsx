@@ -60,11 +60,11 @@ const SidebarLayout: React.FC = () => {
                 </DialogContent>
               </Dialog>
             </SidebarMenuItem>
-            <SidebarMenuItem>
+            {/* <SidebarMenuItem>
               <SidebarMenuButton asChild>
                 <Link to="/planner">Planner</Link>
               </SidebarMenuButton>
-            </SidebarMenuItem>
+            </SidebarMenuItem> */}
           </SidebarMenu>
         </SidebarContent>
 

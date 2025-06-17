@@ -7,6 +7,8 @@ import { PASSWORD_RESET_SECRET, PASSWORD_RESET_DURATION, SESSION_EXPIRATION, PRI
 import { UnauthorizedError } from '../errors/UnauthorizedError';
 import { validatePasswordReset, validateRegistration, validateForgotPassword, validatePasswordResetCode } from '../helpers/authUtils';
 import { MultiValidationError } from '../errors/MultiValidationError';
+import { generateCode } from '../helpers/generateCode';
+import { hashPassword } from '../helpers/hashPassword';
 
 if (!PRIVATE_KEY) {
   throw new Error('PRIVATE_KEY is not defined in the environment variables. Check if the private.pem file exists in src/config/secrets.');
@@ -25,9 +27,8 @@ export const authService = {
     }
 
     if (errors.length) throw new MultiValidationError(errors);
-
-    const saltRounds = 12;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    
+    const hashedPassword = hashPassword(password);
 
     await prisma.$transaction(async (tx) => {
       const newUser = await tx.user.create({
@@ -35,7 +36,7 @@ export const authService = {
       });
       console.log('New user created:', newUser);
 
-      const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+      const verificationCode = generateCode();
 
       await tx.verificationToken.create({
         data: {
