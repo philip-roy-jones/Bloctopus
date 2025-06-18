@@ -114,7 +114,7 @@ const NewTask: React.FC<{ onClose: () => void; closeOnCreate?: boolean }> = ({
       </div>
 
       <div className="flex justify-end">
-        <Button className="w-25 mr-4" variant={"outline"} onClick={onClose}>
+        <Button className="w-25 mr-4" type="button" variant={"outline"} onClick={onClose}>
           <span className="text-sm">Cancel</span>
         </Button>
 
