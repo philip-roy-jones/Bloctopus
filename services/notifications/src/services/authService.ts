@@ -1,8 +1,8 @@
-import { API_GATEWAY_URL } from '@/config/config';
+import { NGINX_URL } from '@/config/config';
 
 export async function fetchUserEmail(userId: string): Promise<string> {
   try {
-    const response = await fetch(`${API_GATEWAY_URL}/api/auth/users/${userId}/email/`, {
+    const response = await fetch(`${NGINX_URL}/api/users/${userId}/email/`, {
       method: 'GET',
       headers: {
         'X-Internal-Request': 'true'

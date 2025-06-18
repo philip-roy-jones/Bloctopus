@@ -11,4 +11,4 @@ export const REDIS_PORT = process.env.REDIS_PORT ? parseInt(process.env.REDIS_PO
 
 export const MAILER_API_KEY = process.env.MAILER_API_KEY;
 export const WEB_URL = process.env.WEB_URL;
-export const API_GATEWAY_URL = process.env.API_GATEWAY_URL || 'http://nginx';
+export const NGINX_URL = process.env.NGINX_URL || 'http://nginx';
