@@ -12,6 +12,14 @@ Built as part of the **CS 361 course at Oregon State University**, Bloctopus is 
 
 ---
 
+## 📹 Demo Video
+
+Watch the 2:51 demo here: [https://www.youtube.com/watch?v=-CmsmjxCOIQ](https://www.youtube.com/watch?v=-CmsmjxCOIQ)
+
+[![Demo Video Thumbnail](https://img.youtube.com/vi/-CmsmjxCOIQ/0.jpg)](https://www.youtube.com/watch?v=-CmsmjxCOIQ)
+
+---
+
 ## 🧱 Architecture Overview
 
 - **Frontend**: React (decoupled)
